@@ -2,7 +2,7 @@ from django.urls import path
 from AppRestaurante import views
 
 urlpatterns = [
-    path('""/', views.inicio, name="Inicio"),
+    path('', views.inicio, name="Inicio"),
     path('menu/', views.menu, name="Menu"),
     path('local/', views.local, name="Local"),
     path('reserva/', views.reserva, name="Reserva"),

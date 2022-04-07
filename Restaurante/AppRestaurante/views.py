@@ -4,18 +4,22 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 def inicio(request):
-    return HttpResponse("Vista Inicio")
+    return render(request, "inicio.html")
+    
 
 def menu(request):
-    return HttpResponse("Vista Menú")
+    return render(request, "menu.html")
+
 
 def local(request):
-    return HttpResponse("Vista Local")
+    return render(request, "local.html")
+
 
 def reserva(request):
-    return HttpResponse("Vista Reserva") 
+    return render(request, "reserva.html")
 
 def contacto(request):
-    return HttpResponse("Vista Contacto")        
+    return render(request, "contacto.html")
+    
 
 
