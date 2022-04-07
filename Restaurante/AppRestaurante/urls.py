@@ -7,4 +7,6 @@ urlpatterns = [
     path('local/', views.local, name="Local"),
     path('reserva/', views.reserva, name="Reserva"),
     path('contacto/', views.contacto, name="Contacto"),
+    path('busquedaLocal/', views.busquedaLocal, name="BusquedaLocal"),
+    path('buscar/', views.buscar, name="Buscar"),
 ]

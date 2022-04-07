@@ -2,6 +2,23 @@
 
 {% load static %}
 
+{% block title %}Locales{% endblock title %}
+
 {% block contenidoQueCambia %}
-<h1>Vista Local</h1>
+<h2>Locales</h2>
+<h6>Cargar nuevo local:</h6>
+
+{% if miFormulario.errors %}
+    
+    <p style="color: red;">Están mal los datos, revisar</p>
+        
+{% endif %}
+        
+    <form action="" method="POST">{% csrf_token %}
+        <table>
+            {{miFormulario.as_table}}
+        </table>
+        <input type="submit" value="Enviar">
+    </form>
+
 {% endblock contenidoQueCambia %}

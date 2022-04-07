@@ -2,6 +2,24 @@
 
 {% load static %}
 
+{% block title %}Menú{% endblock title %}
+
 {% block contenidoQueCambia %}
-<h1>Vista Menu</h1>
+
+<h2>Menú</h2>
+<h6>Cargar nuevo menú:</h6>
+
+{% if miFormulario.errors %}
+    
+    <p style="color: red;">Están mal los datos, revisar</p>
+        
+{% endif %}
+        
+    <form action="" method="POST">{% csrf_token %}
+        <table>
+            {{miFormulario.as_table}}
+        </table>
+        <input type="submit" value="Enviar">
+    </form>
+
 {% endblock contenidoQueCambia %}
