@@ -2,18 +2,18 @@ from django.db import models
 from django.forms import DateField, DateTimeField
 
 class Menu(models.Model):
-    tipo = models.CharField(max_length=40)
+    tipo = models.CharField(max_length=20)
     nombre = models.CharField(max_length=40)
-    descripcion = models.CharField(max_length=40) 
+    descripcion = models.CharField(max_length=128) 
 
     def __str__(self):
         return f"{self.nombre}"
     
 class Local(models.Model):
-    provincia = models.CharField(max_length=40)
-    localidad = models.CharField(max_length=40)
+    provincia = models.CharField(max_length=20)
+    localidad = models.CharField(max_length=20)
     direccion = models.CharField(max_length=40) 
-    telefono = models.CharField(max_length=40)   
+    telefono = models.CharField(max_length=15)   
     exterior = models.CharField(max_length=5)
     capacidad_interior = models.IntegerField()  
     capacidad_exterior = models.IntegerField(blank=True, null=True)   
@@ -23,7 +23,7 @@ class Local(models.Model):
     
 class Reserva(models.Model):
     nombre_completo = models.CharField(max_length=40)
-    dia = models.CharField(max_length=10)
+    dia = models.DateField()
     horario = models.CharField(max_length=5)
     cantidad_personas = models.IntegerField() 
     lugar = models.CharField(max_length=15)
@@ -35,7 +35,7 @@ class Reserva(models.Model):
 class Contacto(models.Model):
     motivo = models.CharField(max_length=20)
     nombre_completo = models.CharField(max_length=50)
-    telefono = models.IntegerField() 
+    telefono = models.CharField(max_length=15) 
     email = models.EmailField()
     mensaje = models.CharField(max_length=256)
     local = models.ForeignKey(Local, on_delete=models.CASCADE, blank=True, null=True)
