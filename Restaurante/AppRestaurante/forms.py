@@ -1,3 +1,4 @@
+from ast import pattern
 from datetime import datetime
 from logging import PlaceHolder
 from django import forms
@@ -9,23 +10,21 @@ class MenuFormulario(forms.Form):
     tipo = forms.ChoiceField(choices= opciones)
     nombre = forms.CharField(max_length=40)
     descripcion = forms.CharField(label="Descripción", max_length=128) 
+    imagen = forms.ImageField()
 
 class LocalFormulario(forms.Form):
     provincia = forms.CharField(max_length=20)
     localidad = forms.CharField(max_length=30)
     direccion = forms.CharField(label="Dirección", max_length=40) 
     telefono = forms.IntegerField(label="Teléfono")   
-    exterior = forms.ChoiceField(label="¿Posee patio o terraza?", choices= (("Sí", "Sí"), ("No", "No")))
-    capacidad_interior = forms.IntegerField(label="Capacidad interior")  
-    capacidad_exterior = forms.IntegerField(label="Capacidad exterior", required=False) 
-
+    capacidad = forms.IntegerField(label="Capacidad", widget= forms.TextInput(attrs={'placeholder':'Cantidad de personas'}))  
+    
 class ReservaFormulario(forms.Form):
     horarios = opciones = (("10:00","10:00"), ("12:00","12:00"), ("14:00","14:00"), ("16:00","16:00"), ("18:00","18:00"), ("20:00","20:00"), ("22:00","22:00"))
     nombre_completo = forms.CharField(label="Nombre completo")
-    dia = forms.DateField(label="Día",   widget= forms.TextInput(attrs={'placeholder':'YYYY-MM-DD'}))
+    dia = forms.DateField(label="Fecha", widget= forms.TextInput(attrs={'type':'date'}))
     horario = forms.ChoiceField(choices=horarios)
-    cantidad_personas = forms.IntegerField(label="Cantidad de personas") 
-    lugar = forms.ChoiceField(choices=(("Dentro","Dentro"), ("Fuera","Fuera")))
+    cantidad_personas = forms.IntegerField(label="Cantidad de personas", min_value=1)
     local = forms.ModelChoiceField(queryset=Local.objects.all())
 
 class ContactoFormulario(forms.Form):
@@ -35,3 +34,4 @@ class ContactoFormulario(forms.Form):
     email = forms.EmailField(max_length=30)
     mensaje = forms.CharField(max_length=256)
     local = forms.ModelChoiceField(queryset=Local.objects.all(), required=False)
+
