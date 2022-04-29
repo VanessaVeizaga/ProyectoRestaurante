@@ -10,14 +10,14 @@ class MenuFormulario(forms.Form):
     tipo = forms.ChoiceField(choices= opciones)
     nombre = forms.CharField(max_length=40)
     descripcion = forms.CharField(label="Descripción", max_length=128) 
-    imagen = forms.ImageField()
+    imagen = forms.ImageField(required=False)
 
 class LocalFormulario(forms.Form):
     provincia = forms.CharField(max_length=20)
     localidad = forms.CharField(max_length=30)
     direccion = forms.CharField(label="Dirección", max_length=40) 
     telefono = forms.IntegerField(label="Teléfono")   
-    capacidad = forms.IntegerField(label="Capacidad", widget= forms.TextInput(attrs={'placeholder':'Cantidad de personas'}))  
+    capacidad = forms.IntegerField(label="Capacidad", widget= forms.TextInput(attrs={'placeholder':'Cantidad de reservas'}))  
     
 class ReservaFormulario(forms.Form):
     horarios = opciones = (("10:00","10:00"), ("12:00","12:00"), ("14:00","14:00"), ("16:00","16:00"), ("18:00","18:00"), ("20:00","20:00"), ("22:00","22:00"))

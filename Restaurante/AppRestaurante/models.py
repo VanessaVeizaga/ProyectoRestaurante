@@ -18,7 +18,7 @@ class Local(models.Model):
     capacidad = models.IntegerField()  
 
     def __str__(self):
-        return f"{self.provincia} - {self.direccion}"
+        return f"{self.provincia} - {self.localidad} - {self.direccion}"
     
 class Reserva(models.Model):
     nombre_completo = models.CharField(max_length=40)
@@ -27,8 +27,8 @@ class Reserva(models.Model):
     cantidad_personas = models.PositiveIntegerField()
     local = models.ForeignKey(Local, on_delete=models.CASCADE)
 
-  #  def __str__(self):
-   #     return f"{self.local} {self.dia} {self.horario} {self.cantidad_personas}"
+    def __str__(self):
+        return f"{self.local} - {self.dia} - {self.horario}"
 
 class Contacto(models.Model):
     motivo = models.CharField(max_length=20)

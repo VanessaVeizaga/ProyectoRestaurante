@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar local</title>
+</head>
+<body style="background-color: khaki;">
+    <h2>Actualizar Local</h2>
+    <br>
+    {% for l in locales  %}
+        <li>{{l}}</li>
+        <a style="color: black; margin: 15px;", href= "{% url 'EditarLocal' l.id %}">Editar local </a>    
+        <a style="color: black; margin: 15px;", href= "{% url 'EliminarLocal' l.id %}">Eliminar local </a>    
+        <br>
+        <br>
+    {% endfor %}
+    <br>
+    <a style="color: black;", href= "{% url 'AgregarLocal' %}">Agregrar nuevo local </a> 
+    <br>
+    <br>
+    <a style="color: black;", href= "{% url 'Local' %}">Volver a Locales </a>     
+
+</body>
+</html>

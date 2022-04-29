@@ -6,20 +6,14 @@
 
 {% block contenidoQueCambia %}
 
-<h2>Menú</h2>
-<h6>Cargar nuevo menú:</h6>
+<h2>Menús</h2>
 
-{% if miFormulario.errors %}
-    
-    <p style="color: red;">Están mal los datos, revisar</p>
-        
-{% endif %}
-        
-    <form action="" method="POST">{% csrf_token %}
-        <table>
-            {{miFormulario.as_table}}
-        </table>
-        <input type="submit" value="Enviar">
-    </form>
+<br>
+{% for m in menus  %}
+    <li>{{m}}</li>
+    <br>
+{% endfor %}
+<br>
+<a style="color: black;", href= "{% url 'ActualizarMenu' %}">Actualizar menús</a>
 
 {% endblock contenidoQueCambia %}

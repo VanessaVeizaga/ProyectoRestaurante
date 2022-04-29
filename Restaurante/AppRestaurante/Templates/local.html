@@ -6,19 +6,12 @@
 
 {% block contenidoQueCambia %}
 <h2>Locales</h2>
-<h6>Cargar nuevo local:</h6>
-
-{% if miFormulario.errors %}
-    
-    <p style="color: red;">Están mal los datos, revisar</p>
-        
-{% endif %}
-        
-    <form action="" method="POST">{% csrf_token %}
-        <table>
-            {{miFormulario.as_table}}
-        </table>
-        <input type="submit" value="Enviar">
-    </form>
+<br>
+{% for l in locales  %}
+    <li>{{l}}</li>
+    <br>
+{% endfor %}
+<br>
+<a style="color: black;", href= "{% url 'ActualizarLocal' %}">Actualizar locales</a>    
 
 {% endblock contenidoQueCambia %}
