@@ -1,13 +1,15 @@
-from math import inf
-import re
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from .models import*
 from .forms import*
 
 def inicio(request):
     return render(request, "inicio.html")
-    
+
+@login_required    
 def reserva(request):
     if request.method == 'POST':
         miFormulario = ReservaFormulario(request.POST)
@@ -158,4 +160,58 @@ def editarMenu(request, id):
          miFormulario = MenuFormulario(initial={"tipo": menu.tipo, "nombre": menu.nombre, "descripcion": menu.descripcion, "imagen": menu.imagen})
     return render(request, "editarMenu.html", {"miFormulario": miFormulario, "id": id})
 
-    
+  #--------------------LOGIN------------------------------------------------------------------------
+
+def login_request(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data = request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username = username, password = password)
+            if user is not None:
+                login(request, user)
+                return render(request, "inicio.html", {"mensaje": f"Bienvenido {username}"})
+            else:
+                return render(request, "login.html", {"mensaje": "Error, datos incorrectos."})   
+        else:
+            return render(request, "login.html", {"mensaje": "Error, formulario erróneo"})   
+    form = AuthenticationForm()
+    return render(request, "login.html", {"form": form})              
+
+def register(request):
+    if request.method == "POST":
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            form.save()
+            return render(request, "inicio.html", {"mensaje": "Usuario creado."})
+    else:
+        form = UserRegisterForm()
+    return render(request, "registro.html", {"form": form})    
+
+#-------------------------EDITAR PERFIL-----------------------------------------------------------------
+
+@login_required
+def editarPerfil(request):
+    usuario = request.user
+    if request.method == "POST":
+        miFormulario = UserEditForm(request.POST)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data
+            usuario.first_name = informacion['first_name']
+            usuario.last_name = informacion['last_name']
+            usuario.email = informacion['email']
+            usuario.password1 = informacion['password1']
+            usuario.password2 = informacion['password2']
+            usuario.save()
+            miFormulario = UserEditForm()
+            return render(request, "editarPerfil.html", {"miFormulario": miFormulario, "mensaje": "Se guardaron los cambios correctamente."})
+    else:
+        miFormulario = UserEditForm(initial={"first_name": usuario.first_name, "last_name": usuario.last_name, "email": usuario.email})
+    return render(request, "editarPerfil.html", {"miFormulario": miFormulario})    
+
+def miCuenta(request):
+    return render(request, "miCuenta.html")        
+
+

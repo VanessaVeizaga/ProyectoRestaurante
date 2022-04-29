@@ -1,0 +1,12 @@
+{% extends 'padre.html' %}
+
+{% load static %}
+
+{% block title %}Mi cuenta{% endblock title %}
+    
+{% block contenidoQueCambia %}
+<h2>{{user.username}}</h2>
+<br>
+<a href="{% url 'EditarPerfil' %}">Editar perfil</a>
+
+{% endblock contenidoQueCambia %}

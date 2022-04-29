@@ -41,10 +41,7 @@ class Contacto(models.Model):
     def __str__(self):
         return f"{self.nombre_completo}"
 
-class reservasManager(models.Manager):
-    def filtrar_reservas(self, local, dia, horario):
-        reservas = self.filter(local__icontains = local, dia__icontains = dia, horario__icontains = horario)
-        return reservas
+
 
 
 
