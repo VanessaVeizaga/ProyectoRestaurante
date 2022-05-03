@@ -1,8 +1,7 @@
+from datetime import datetime
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-
-from .models import Local
+from .models import User, Local
 
 class MenuFormulario(forms.Form):
     opciones = (("Entrada","Entrada"), ("Plato principal","Plato Principal"), ("Postre","Postre"), ("Desayuno-Merienda","Desayuno-Merienda"))
@@ -20,7 +19,6 @@ class LocalFormulario(forms.Form):
     
 class ReservaFormulario(forms.Form):
     horarios = opciones = (("10:00","10:00"), ("12:00","12:00"), ("14:00","14:00"), ("16:00","16:00"), ("18:00","18:00"), ("20:00","20:00"), ("22:00","22:00"))
-    nombre_completo = forms.CharField(label="Nombre completo")
     dia = forms.DateField(label="Fecha", widget= forms.TextInput(attrs={'type':'date'}))
     horario = forms.ChoiceField(choices=horarios)
     cantidad_personas = forms.IntegerField(label="Cantidad de personas", min_value=1)
@@ -38,20 +36,36 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(label = "E-mail")
     first_name = forms.CharField(label = "Nombre")
     last_name = forms.CharField(label = "Apellido")
+    imagen = forms.ImageField(label="Foto")
     password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Repetir contraseña", widget=forms.PasswordInput)  
+    imagen = forms.ImageField(label="Foto")
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'first_name', 'last_name', 'imagen', 'password1', 'password2']
         help_texts = {k:"" for k in fields}  
 
 class UserEditForm(UserCreationForm):
     email = forms.EmailField(label = "Modificar e-mail:")
     first_name = forms.CharField(label = "Modificar nombre")
     last_name = forms.CharField(label = "Modificar apellido")
+    imagen = forms.ImageField(label="Modificar foto")
     password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Repetir contraseña", widget=forms.PasswordInput)  
+    
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['email', 'first_name', 'last_name', 'password1', 'password2', 'imagen']
         help_texts = {k:"" for k in fields}  
+
+class AvatarFormulario(forms.Form):
+    imagen = forms.ImageField(required=True)
+
+class PostFormulario(forms.Form):
+    fecha = datetime.now()
+    contenido = forms.CharField(label="Escribe aquí", max_length=256)
+    imagen = forms.ImageField()
+
+class ComentarioFormulario(forms.Form):
+    fecha = datetime.now()    
+    contenido = forms.CharField(label="Escribe aquí", max_length=256)

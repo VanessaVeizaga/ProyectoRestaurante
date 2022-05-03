@@ -3,10 +3,19 @@
 {% load static %}
 
 {% block title %}Mi cuenta{% endblock title %}
-    
+
+{% block header %}<h2>Mi Cuenta</h2>{% endblock header %}
+
 {% block contenidoQueCambia %}
-<h2>{{user.username}}</h2>
-<br>
-<a href="{% url 'EditarPerfil' %}">Editar perfil</a>
+
+    <h2>{{user.username}}</h2>
+    <div class="avatar" style="background-image: url('{{user.imagen.url}}');"></div>
+    <span>
+        <a href="{% url 'EditarPerfil' %}">Editar perfil</a>
+        <a href="{% url 'AgregarAvatar' %}">Agregar avatar</a>
+    </span>
+  
+
+
 
 {% endblock contenidoQueCambia %}

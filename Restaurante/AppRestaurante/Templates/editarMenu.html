@@ -8,13 +8,14 @@
 </head>
 <body style="background-color: khaki;">
     <h2>Editar menú:</h2>
-    <form action="" method="POST">{% csrf_token %}
+    <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
         <table style="text-align: left;">
-            {{miFormulario.as_table}}
+            {{miFormulario.as_p}}
         </table>
-        <input style="margin: 10px 110px 0px;" type="submit" value="Enviar">
+        <input style="margin: 10px 110px 0px;" type="submit" value="Actualizar">
     </form>
     <p>{{mensaje}}</p>
     <a href="{% url 'Menu' %}">Volver a la Carta</a>
 </body>
 </html>
+

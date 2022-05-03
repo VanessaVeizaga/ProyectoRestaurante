@@ -4,9 +4,11 @@
 
 {% block title %}Reservas{% endblock title %}
 
+{% block header %}<h2>Reservas</h2>{% endblock header %}
+
 {% block contenidoQueCambia %}
 
-<h2>Reservas</h2>
+<p>{{mensaje}}</p>
 <br>
 <h6>Cargar nueva reserva:</h6>
 
@@ -23,7 +25,6 @@
         <br>
         <input type="submit" value="Enviar"> 
         <br>
-        <p>{{mensaje}}</p>
     </form>
 
 

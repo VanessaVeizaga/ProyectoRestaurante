@@ -6,11 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>
-        {% block title %}
-            
-        {% endblock title %}
-            </title>
+        <title>{% block title %}{% endblock title %} - Dominicci Restaurante</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
@@ -19,6 +15,7 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet" />
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
     <body id="page-top" style="background-color: khaki;">
@@ -28,13 +25,14 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link" href="{% url 'Inicio' %}">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'Menu' %}">Menú</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'Menu' %}">Carta</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'Local' %}">Locales</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'Reserva' %}">Reservas</a><li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'Contacto' %}">Contacto</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'Comunidad' %}">Comunidad</a></li>
                          
                          {% if request.user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'MiCuenta' %}">Mi cuenta</li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'MiCuenta' %}">Mi cuenta</a></li>  
                             <li class="nav-item"><a class="btn btn-primary" style="background-color: black; border-color: white;" href="{% url 'Logout' %}">Cerrar sesión</a></li>
                          {% endif %}
                          {% if not request.user.is_authenticated %}
@@ -46,24 +44,24 @@
             </div>
         </nav>
         <!-- Masthead-->
-        
+        <header>
 
-        
-        <header class="masthead">
-            <div class="container">
+            
+            {% block inicio %}
                 
-                {% block Inicio %}
-                    
-                {% endblock Inicio %}
-                    
-            </div>
+            {% endblock inicio %}
+                
+            
+            {% block header %}
+                
+            {% endblock header %}
+                
         </header>
-        
-        
+
         {% block contenidoQueCambia %}
             
-        {% endblock contenidoQueCambia %}
-            
+        {% endblock contenidoQueCambia %} 
+        
         <!-- Footer-->
         <footer class="footer py-4">
             <div class="container">
