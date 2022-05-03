@@ -4,9 +4,12 @@
 
 {% block title %}Reservas{% endblock title %}
 
+{% block header %}<h2>Reservas</h2>{% endblock header %}
+
 {% block contenidoQueCambia %}
 
-<h2>Reservas</h2>
+<p>{{mensaje}}</p>
+<br>
 <h6>Cargar nueva reserva:</h6>
 
 {% if miFormulario.errors %}
@@ -19,7 +22,10 @@
         <table>
             {{miFormulario.as_table}}
         </table>
-        <input type="submit" value="Enviar">
+        <br>
+        <input type="submit" value="Enviar"> 
+        <br>
     </form>
+
 
 {% endblock contenidoQueCambia %}

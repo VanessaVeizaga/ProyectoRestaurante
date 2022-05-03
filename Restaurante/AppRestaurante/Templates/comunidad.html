@@ -1,0 +1,53 @@
+{% extends 'padre.html' %}
+
+{% load static %}
+
+{% block title %}Reservas{% endblock title %}
+
+{% block header %}<h2>Comunidad Dominicci</h2>{% endblock header %}
+
+{% block contenidoQueCambia %}
+
+<section class="contenido">
+    <p>{{mensaje}}</p>
+    <br>
+    <h4>Compartí tu experiencia en nuestros locales:</h4>
+    
+    {% if miFormulario.errors %}
+        
+        <p style="color: red;">Están mal los datos, revisar</p>
+             
+    {% endif %}
+            
+        <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+            
+            <div class="mb-3">
+                <label  class="form-label" for="{{miFormulario.contenido.id_for_label}}"> {{miFormulario.contenido.label_tag|capfirst}} </label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" type="text" name="{{miFormulario.contenido.html_name}}"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{miFormulario.imagen.id_for_label}}"> {{miFormulario.imagen.label_tag}} </label>
+                <input class="form-control form-control-sm" id="formFileSm" type="file" name="{{miFormulario.imagen.html_name}}">
+            </div>
+            
+ 
+                
+            <input style="margin: 0 auto;" type="submit" value="Enviar">
+        </form>
+        <br>
+        {% for p in posts  %}
+            <li>{{p.contenido}}</li>
+            <img src="{{p.imagen.url}}", height="400px">
+            <br>
+            <p>{{miFormulario.fecha}}</p>
+            <form action="" method="POST">{% csrf_token %}
+                <table>
+                    {{comentarios.as_table}}
+                </table>
+                <input type="submit" value="Enviar">
+            </form>
+        {% endfor %}
+        <br>
+</section>
+
+{% endblock contenidoQueCambia %}

@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+}
+
+
+header {
+    padding-top:5rem;
+    padding-bottom: 2rem;
+    text-align: center;
+    color: #fff;
+    background-image: url("../assets/img/header-bg.jpg");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: center center;
+    background-size: cover;
+}
+
+div.avatar {
+    height: 100px;
+    width: 100px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 50%;
+    background-size: 120% auto;
+    margin: 0 auto;
+  }
+
+h2 {
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 10px;
+}
+.contenido {
+    width: 500px;
+    margin: 0 auto;
+    padding-top: 1rem;
+}
+
