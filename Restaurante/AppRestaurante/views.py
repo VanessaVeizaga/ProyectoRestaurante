@@ -1,50 +1,42 @@
-from django.shortcuts import render
-
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from .models import*
 from .forms import*
 
+@login_required
 def inicio(request):
-    return render(request, "inicio.html")
-    
+    avatares = Avatar.objects.get(user = request.user.id)
+    return render(request, "inicio.html", {"url": avatares.imagen.url})
 
-def menu(request):
-    if request.method == 'POST':
-        miFormulario = MenuFormulario(request.POST)
-        print(miFormulario)
-        if miFormulario.is_valid:
-            informacion = miFormulario.cleaned_data    
-            menu = Menu(tipo=informacion['tipo'], nombre=informacion['nombre'], descripcion=informacion['descripcion'])
-            menu.save()
-            return render(request, "inicio.html")
-    else:
-        miFormulario = MenuFormulario()
-    return render(request, "menu.html", {"miFormulario": miFormulario})
+#------------------RESERVA------------------------------------------------------------------------
 
-
-def local(request):
-    if request.method == 'POST':
-        miFormulario = LocalFormulario(request.POST)
-        print(miFormulario)
-        if miFormulario.is_valid:
-            informacion = miFormulario.cleaned_data    
-            local = Local(provincia=informacion['provincia'], localidad=informacion['localidad'], direccion=informacion['direccion'], telefono=informacion['telefono'], exterior=informacion['exterior'], capacidad_interior=informacion['capacidad_interior'], capacidad_exterior=informacion['capacidad_exterior'])
-            local.save()
-            return render(request, "inicio.html")
-    else:
-        miFormulario = LocalFormulario() 
-    return render(request, "local.html", {"miFormulario": miFormulario})
-
+@login_required    
 def reserva(request):
     if request.method == 'POST':
         miFormulario = ReservaFormulario(request.POST)
         print(miFormulario)
-        if miFormulario.is_valid:
-            informacion = miFormulario.cleaned_data    
-            reserva = Reserva(nombre_completo=informacion['nombre_completo'], dia=informacion['dia'], horario=informacion['horario'], cantidad_personas=informacion['cantidad_personas'], lugar=informacion['lugar'], local=informacion['local'])
-            reserva.save()
-            return render(request, "inicio.html")
+        if miFormulario.is_valid():
+            user = User.objects.get(username = request.user)
+            informacion = miFormulario.cleaned_data  
+            dia=informacion['dia']
+            horario=informacion['horario']
+            cantidad_personas=informacion['cantidad_personas']
+            local = informacion['local']
+            reservas_coincidentes = Reserva.objects.filter(local__id__contains = local.id).filter(dia__gte = dia).filter(horario__icontains = horario)
+            suma = 0
+            for i in reservas_coincidentes:
+                suma += i.cantidad_personas
+            if suma + cantidad_personas <= local.capacidad:     
+                reserva = Reserva(user = user, dia = dia, horario = horario, cantidad_personas = cantidad_personas, local = local)
+                reserva.save()
+                miFormulario = ReservaFormulario()
+                mensaje = "Se registró con éxito su reserva. ¡Gracias por elegirnos!"
+            else:
+                mensaje = "No es posible generar una reserva con los datos ingresados. Por favor intente en otra fecha, horario o local."
+            return render(request, "reserva.html", {"miFormulario": miFormulario, "mensaje": mensaje})    
     else:
         miFormulario = ReservaFormulario()
     return render(request, "reserva.html", {"miFormulario": miFormulario})
@@ -73,7 +65,194 @@ def buscar(request):
     else:
       return HttpResponse("No enviaste datos") 
 
-        
+#---------------LOCAL-----------------------------------------------------------------------------------
+
+def local(request):
+    locales = Local.objects.order_by('provincia').all()
+    return render(request, "local.html", {"locales": locales})      
+
+def agregarLocal(request):
+    if request.method == 'POST':
+        miFormulario = LocalFormulario(request.POST)
+        print(miFormulario)
+        if miFormulario.is_valid:
+            informacion = miFormulario.cleaned_data    
+            local = Local(provincia=informacion['provincia'], localidad=informacion['localidad'], direccion=informacion['direccion'], telefono=informacion['telefono'], capacidad=informacion['capacidad'])
+            local.save()
+            miFormulario = LocalFormulario()
+            mensaje = "Se agregó con éxito el local ubicado en: "
+            return render(request, "agregarLocal.html", {"miFormulario": miFormulario, "local": local, "mensaje": mensaje })
+    else:
+        miFormulario = LocalFormulario()        
+    return render(request, "agregarLocal.html", {"miFormulario": miFormulario})
+
+def actualizarLocal(request):
+    locales = Local.objects.order_by('provincia').all()
+    return render(request, "actualizarLocal.html", {"locales": locales})    
+
+def eliminarLocal(request, id):
+    local = Local.objects.get(id = id)
+    local.delete()
+    locales = Local.objects.order_by('provincia').all()
+    return render(request, "actualizarLocal.html", {"locales": locales})
+
+def editarLocal(request, id):
+    local = Local.objects.get(id = id)
+    if request.method == 'POST':
+        miFormulario = LocalFormulario(request.POST)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data    
+            local.provincia = informacion["provincia"]
+            local.localidad = informacion["localidad"]
+            local.direccion = informacion["direccion"]
+            local.telefono = informacion["telefono"]
+            local.capacidad = informacion["capacidad"]
+            local.save()
+            miFormulario = LocalFormulario()
+            mensaje = "Se guardaron correctamente los cambios."
+            return render(request, "editarLocal.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    else:
+         miFormulario = LocalFormulario(initial={"provincia": local.provincia, "localidad": local.localidad, "direccion": local.direccion, "telefono": local.telefono, "capacidad": local.capacidad})
+    return render(request, "editarLocal.html", {"miFormulario": miFormulario, "id": id})
+
+#-------------------------MENÚ-----------------------------------------------------------------------------------
+
+def menu(request):
+    menus = Menu.objects.order_by('tipo').all()
+    return render(request, "menu.html", {"menus": menus})    
+
+def agregarMenu(request):
+    if request.method == 'POST':
+        miFormulario = MenuFormulario(request.POST, request.FILES)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data    
+            menu = Menu(tipo=informacion['tipo'], nombre=informacion['nombre'], descripcion=informacion['descripcion'], imagen=informacion['imagen'])
+            menu.save()
+            miFormulario = MenuFormulario()
+            mensaje = "Se agregó con éxito el siguiente menú: "
+            return render(request, "agregarMenu.html", {"miFormulario": miFormulario, "menu": menu, "mensaje": mensaje })
+    else:
+        miFormulario = MenuFormulario()        
+    return render(request, "agregarMenu.html", {"miFormulario": miFormulario})
+               
+def actualizarMenu(request):
+    menus = Menu.objects.order_by('tipo').all()
+    return render(request, "actualizarMenu.html", {"menus": menus})    
+
+def eliminarMenu(request, id):
+    menu = Menu.objects.get(id = id)
+    menu.delete()
+    menus = Menu.objects.order_by('tipo').all()
+    return render(request, "actualizarMenu.html", {"menus": menus})
+
+def editarMenu(request, id):
+    menu = Menu.objects.get(id = id)
+    if request.method == 'POST':
+        miFormulario = MenuFormulario(request.POST, request.FILES)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data    
+            menu.tipo = informacion["tipo"]
+            menu.nombre = informacion["nombre"]
+            menu.descripcion = informacion["descripcion"]
+            menu.imagen = informacion["imagen"]
+            menu.save()
+            miFormulario = MenuFormulario()
+            mensaje = "Se guardaron correctamente los cambios."
+            return render(request, "editarMenu.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    else:
+         miFormulario = MenuFormulario(initial={"tipo": menu.tipo, "nombre": menu.nombre, "descripcion": menu.descripcion, "imagen": menu.imagen})
+    return render(request, "editarMenu.html", {"miFormulario": miFormulario, "id": id})
+
+  #--------------------LOGIN------------------------------------------------------------------------
+
+def login_request(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data = request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username = username, password = password)
+            if user is not None:
+                login(request, user)
+                return render(request, "inicio.html", {"mensaje": f"Bienvenido {username}"})
+            else:
+                return render(request, "login.html", {"mensaje": "Error, datos incorrectos."})   
+        else:
+            return render(request, "login.html", {"mensaje": "Error, formulario erróneo"})   
+    form = AuthenticationForm()
+    return render(request, "login.html", {"form": form})              
+
+def register(request):
+    if request.method == "POST":
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            form.save()
+            return render(request, "inicio.html", {"mensaje": "Usuario creado."})
+    else:
+        form = UserRegisterForm()
+    return render(request, "registro.html", {"form": form})    
+
+#-------------------------EDITAR PERFIL-----------------------------------------------------------------
+
+@login_required
+def editarPerfil(request):
+    usuario = request.user
+    if request.method == "POST":
+        miFormulario = UserEditForm(request.POST, request.FILES)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data
+            usuario.first_name = informacion['first_name']
+            usuario.last_name = informacion['last_name']
+            usuario.email = informacion['email']
+            usuario.password1 = informacion['password1']
+            usuario.password2 = informacion['password2']
+            usuario.imagen = informacion['imagen']
+            usuario.save()
+            miFormulario = UserEditForm()
+            return render(request, "editarPerfil.html", {"miFormulario": miFormulario, "mensaje": "Se guardaron los cambios correctamente."})
+    else:
+        miFormulario = UserEditForm(initial={"first_name": usuario.first_name, "last_name": usuario.last_name, "email": usuario.email, "imagen": usuario.imagen})
+    return render(request, "editarPerfil.html", {"miFormulario": miFormulario})    
+
+def miCuenta(request):
+    return render(request, "miCuenta.html")    
+
+@login_required
+def agregarAvatar(request):
+    if request.method == "POST":
+        miFormulario = AvatarFormulario(request.POST, request.FILES)
+        if miFormulario.is_valid():
+            u = User.objects.get(username = request.user)
+            avatar = Avatar(user = u, imagen = miFormulario.cleaned_data['imagen'])
+            avatar.save()
+            return render(request, "inicio.html")
+    else:
+        miFormulario = AvatarFormulario()
+    return render(request, "agregarAvatar.html", {"miFormulario": miFormulario})            
+
+#---------------------COMUNIDAD-----------------------------------------------------
+
+@login_required
+def comunidad(request):
+    posts = Post.objects.order_by('fecha').all()
+    if request.method == 'POST':
+        miFormulario = PostFormulario(request.POST, request.FILES)
+        print(miFormulario)
+        print("--------------------------------------------------------------------")
+
+        if miFormulario.is_valid():
+            user = User.objects.get(username = request.user)
+            informacion = miFormulario.cleaned_data    
+            post = Post(user=user, contenido=informacion['contenido'], imagen=informacion['imagen'])
+            post.save()
+            miFormulario = PostFormulario()
+            mensaje = "¡Tu post ha sido creado con éxito!"
+            render(request, "comunidad.html", {"miFormulario": miFormulario, "mensaje": mensaje, "post": post})
+            return redirect('Comunidad')           
+    else:   
+        miFormulario = PostFormulario()  
+        post = Post.objects.get(id=id)     
+    return render(request, "comunidad.html", {"miFormulario": miFormulario, "posts": posts})         
 
 
-    
