@@ -8,7 +8,7 @@ class MenuFormulario(forms.Form):
     tipo = forms.ChoiceField(choices= opciones)
     nombre = forms.CharField(max_length=40)
     descripcion = forms.CharField(label="Descripción", max_length=128) 
-    imagen = forms.ImageField(required=False)
+    imagen = forms.ImageField()
 
 class LocalFormulario(forms.Form):
     provincia = forms.CharField(max_length=20)
@@ -58,14 +58,11 @@ class UserEditForm(UserCreationForm):
         fields = ['email', 'first_name', 'last_name', 'password1', 'password2', 'imagen']
         help_texts = {k:"" for k in fields}  
 
-class AvatarFormulario(forms.Form):
-    imagen = forms.ImageField(required=True)
-
 class PostFormulario(forms.Form):
     fecha = datetime.now()
-    contenido = forms.CharField(label="Escribe aquí", max_length=256)
-    imagen = forms.ImageField()
+    contenido = forms.CharField(widget=forms.Textarea, label="Escribe aquí")
+    imagen = forms.ImageField(label="Puedes compartir una foto aquí")
 
 class ComentarioFormulario(forms.Form):
     fecha = datetime.now()    
-    contenido = forms.CharField(label="Escribe aquí", max_length=256)
+    contenido = forms.CharField(widget=forms.Textarea)

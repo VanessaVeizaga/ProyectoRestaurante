@@ -23,7 +23,10 @@ urlpatterns = [
     path('logout', LogoutView.as_view(template_name="inicio.html"), name="Logout"),
     path('miCuenta', views.miCuenta, name="MiCuenta"),
     path('editarPerfil', views.editarPerfil, name="EditarPerfil"),
-    path('agregarAvatar', views.agregarAvatar, name="AgregarAvatar"),
     path('comunidad', views.comunidad, name="Comunidad"),
-
+    path('comentario/<id_post>', views.comentario, name="Comentario"),
+    path('eliminarComentario/<id>', views.eliminarComentario, name="EliminarComentario"),
+    path('editarComentario/<id>', views.editarComentario, name="EditarComentario"),
+    path('eliminarPost/<id>', views.eliminarPost, name="EliminarPost"),
+    path('editarPost/<id>', views.editarPost, name="EditarPost"),
 ]

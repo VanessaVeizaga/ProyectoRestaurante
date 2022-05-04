@@ -8,14 +8,15 @@
 
 {% block contenidoQueCambia %}
 
+<section style="margin-bottom: 30px;" class="contenido">
     <h2>{{user.username}}</h2>
-    <div class="avatar" style="background-image: url('{{user.imagen.url}}');"></div>
-    <span>
-        <a href="{% url 'EditarPerfil' %}">Editar perfil</a>
-        <a href="{% url 'AgregarAvatar' %}">Agregar avatar</a>
-    </span>
-  
+    <div class="perfil" style="background-image: url('{{user.imagen.url}}');"></div>
+    <p><b>Nombre: </b>{{user.first_name}}</p>
+    <p><b>Apellido: </b>{{user.last_name}}</p>
+    <p><b>E-mail: </b>{{user.email}}</p>
+    <a class="link" href="{% url 'EditarPerfil' %}">Editar perfil</a>
 
-
-
+<br>
+<a style="color: black;", href= "{% url 'ActualizarMenu' %}">Actualizar menús</a>
+</section>    
 {% endblock contenidoQueCambia %}

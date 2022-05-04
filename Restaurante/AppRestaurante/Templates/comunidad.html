@@ -2,15 +2,14 @@
 
 {% load static %}
 
-{% block title %}Reservas{% endblock title %}
+{% block title %}Comunidad{% endblock title %}
 
 {% block header %}<h2>Comunidad Dominicci</h2>{% endblock header %}
 
 {% block contenidoQueCambia %}
 
 <section class="contenido">
-    <p>{{mensaje}}</p>
-    <br>
+
     <h4>Compartí tu experiencia en nuestros locales:</h4>
     
     {% if miFormulario.errors %}
@@ -19,35 +18,60 @@
              
     {% endif %}
             
-        <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+    <form class ="form" method="POST" enctype="multipart/form-data"> {% csrf_token %}
             
-            <div class="mb-3">
-                <label  class="form-label" for="{{miFormulario.contenido.id_for_label}}"> {{miFormulario.contenido.label_tag|capfirst}} </label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" type="text" name="{{miFormulario.contenido.html_name}}"></textarea>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="{{miFormulario.imagen.id_for_label}}"> {{miFormulario.imagen.label_tag}} </label>
-                <input class="form-control form-control-sm" id="formFileSm" type="file" name="{{miFormulario.imagen.html_name}}">
-            </div>
-            
- 
-                
-            <input style="margin: 0 auto;" type="submit" value="Enviar">
-        </form>
+        <div class="mb-3">
+            <label style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: bold;" class="form-label" for="{{miFormulario.contenido.id_for_label}}"> {{miFormulario.contenido.label_tag|capfirst}} </label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" type="text" name="{{miFormulario.contenido.html_name}}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: bold;" class="form-label" for="{{miFormulario.imagen.id_for_label}}"> {{miFormulario.imagen.label_tag}} </label>
+            <input class="form-control form-control-sm" id="formFileSm" type="file" name="{{miFormulario.imagen.html_name}}">
+        </div>                  
+        <input style="margin: 0 auto;" type="submit" value="Enviar">
+    </form><br>
+  
+    <h5>Los que nos visitaron...</h5>
+    {% for post in posts  %}
         <br>
-        {% for p in posts  %}
-            <li>{{p.contenido}}</li>
-            <img src="{{p.imagen.url}}", height="400px">
-            <br>
-            <p>{{miFormulario.fecha}}</p>
-            <form action="" method="POST">{% csrf_token %}
-                <table>
-                    {{comentarios.as_table}}
-                </table>
-                <input type="submit" value="Enviar">
-            </form>
-        {% endfor %}
+        --------------------------------------------------------------------------------
         <br>
+        <div class="avatar" style="background-image: url('{{post.user.imagen.url}}');"></div>
+         <strong>    
+            {{post.user}} - 
+            {{post.fecha}} <br>         
+        </strong>
+        <p style="margin-left: 5px;">{{post.contenido}}</p>
+        <img src="{{post.imagen.url}}", width="500px">  
+        {% if request.user == post.user %}
+            <a style="color: darkblue; font-size: small;" href="{% url 'EliminarPost' post.id %}">Eliminar</a>
+            <a style="color: darkblue; font-size: small;" href="{% url 'EditarPost' post.id %}">Editar</a>
+         {% endif %}
+        <br>
+        <p>{{post.fecha}}</p>
+        <h6>Comentarios...</h6>
+        {% if not post.comentarios.all %}
+            <p>Todavía no hay comentarios...<a class="link"; href="{% url 'Comentario' post.id %}">Agrega uno</a></p> 
+        {% else %}   
+        <a class="link" href="{% url 'Comentario' post.id %}">Agrega un comentario..</a> 
+        <br><br>
+            {% for comentario in post.comentarios.all %}
+                <div class="avatar" style="background-image: url('{{comentario.user.imagen.url}}');"></div>
+                <strong style="font-size: 14px;">    
+                     {{comentario.user}} - 
+                     {{comentario.fecha}}
+                </strong>
+                <br>
+                <p style="font-size: 15px; margin-bottom: 5px;">{{comentario.contenido}}</p>
+                {% if request.user == comentario.user %}
+                    <a style="color: darkblue; font-size: small;" href="{% url 'EliminarComentario' comentario.id %}">Eliminar</a>
+                    <a style="color: darkblue; font-size: small;" href="{% url 'EditarComentario' comentario.id %}">Editar</a>
+                {% endif %}
+            {% endfor %}     
+        {% endif %}
+    {% endfor %}
 </section>
 
 {% endblock contenidoQueCambia %}
+
+<a href=""></a>

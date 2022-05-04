@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar comentario</title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+</head>
+<section class="formulario">
+    <h4>Edita tu comentario:</h4>
+    <p>{{mensaje}}</p>
+    {% if miFormulario.errors %}    
+        <p style="color: red;">Están mal los datos, revisar</p>         
+    {% endif %}
+         
+    <form class ="form" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+        {% for field in miFormulario %}
+        <div>
+            <p style="font-weight: bold;">{{field.label_tag}}</p> 
+            {{field}}
+        </div>     
+        {% endfor %}
+        <br>
+        <input type="submit" value="Enviar">
+    </form>
+  
+    <a class="link" href="{% url 'Comunidad' %}">Volver a Comunidad</a> 
+</section>
+</html>

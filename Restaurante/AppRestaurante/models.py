@@ -45,21 +45,17 @@ class Contacto(models.Model):
     def __str__(self):
         return f"{self.nombre_completo}"
 
-class Avatar(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    imagen = models.ImageField(upload_to='avatares', null=True, blank=True)
-
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    fecha = models.DateTimeField(default="2022-05-02 19:22:11.517108")
-    contenido = models.CharField(max_length=256)
+    fecha = models.DateTimeField(auto_now_add=True)
+    contenido = models.TextField(max_length=255) 
     imagen = models.ImageField(upload_to='posts', null=True, blank=True)
 
 class Comentario(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True, related_name="comentarios")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    fecha = models.DateTimeField(default="2022-05-02 19:22:11.517108")
-    contenido = models.CharField(max_length=256)  
+    fecha = models.DateTimeField(auto_now_add=True)
+    contenido = models.TextField(max_length=255) 
 
 
     

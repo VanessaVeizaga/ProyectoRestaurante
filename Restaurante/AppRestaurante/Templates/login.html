@@ -7,6 +7,10 @@
     <title>Login</title>
 </head>
 <body>
+    {% if miFormulario.errors %}
+    <p style="color: red;">Están mal los datos, revisar</p>      
+    {% endif %}
+    
     <form action="" method="POST"> {% csrf_token %}
         {{form.as_p}}
         <button type="submit">Iniciar sesión</button>

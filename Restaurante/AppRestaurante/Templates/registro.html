@@ -7,9 +7,11 @@
     <title>Registro</title>
 </head>
 <body>
-    <form action="" method="POST"> {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit">Regístrate</button>
+    <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+        <table style="text-align: left;">
+            {{miFormulario.as_table}}
+        </table>
+        <input style="margin: 10px 110px 0px;" type="submit" value="Enviar">
     </form>
 </body>
 </html>

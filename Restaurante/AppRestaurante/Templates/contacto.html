@@ -9,18 +9,16 @@
     
 {% block contenidoQueCambia %}
 
-<h6>Cargar nuevo mensaje de contacto:</h6>
-
 {% if miFormulario.errors %}
-    
-    <p style="color: red;">Están mal los datos, revisar</p>
-        
+    <p style="color: red;">Están mal los datos, revisar</p>    
 {% endif %}
-        
-    <form action="" method="POST">{% csrf_token %}
+<section style="margin-bottom: 30px;" class="contenido">
+    <h4>Contáctanos:</h4>   
+    <form  class="formulario" action="" method="POST">{% csrf_token %}
         <table>
             {{miFormulario.as_table}}
-        </table>
+        </table><br>
         <input type="submit" value="Enviar">
     </form>
+</section>    
 {% endblock contenidoQueCambia %}

@@ -6,10 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .models import*
 from .forms import*
 
-@login_required
 def inicio(request):
-    avatares = Avatar.objects.get(user = request.user.id)
-    return render(request, "inicio.html", {"url": avatares.imagen.url})
+    return render(request, "inicio.html")
 
 #------------------RESERVA------------------------------------------------------------------------
 
@@ -184,16 +182,16 @@ def login_request(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            form.save()
-            return render(request, "inicio.html", {"mensaje": "Usuario creado."})
+        miFormulario = UserRegisterForm(request.POST, request.FILES)
+        if miFormulario.is_valid():
+            username = miFormulario.cleaned_data['username']
+            miFormulario.save()
+            return render(request, "inicio.html", {"miFormulario": miFormulario, "mensaje": "Usuario creado."})
     else:
-        form = UserRegisterForm()
-    return render(request, "registro.html", {"form": form})    
+        miFormulario = UserRegisterForm()
+    return render(request, "registro.html", {"miFormulario": miFormulario})    
 
-#-------------------------EDITAR PERFIL-----------------------------------------------------------------
+#-------------------------PERFIL-----------------------------------------------------------------
 
 @login_required
 def editarPerfil(request):
@@ -215,44 +213,86 @@ def editarPerfil(request):
         miFormulario = UserEditForm(initial={"first_name": usuario.first_name, "last_name": usuario.last_name, "email": usuario.email, "imagen": usuario.imagen})
     return render(request, "editarPerfil.html", {"miFormulario": miFormulario})    
 
-def miCuenta(request):
-    return render(request, "miCuenta.html")    
+def local(request):
+    locales = Local.objects.order_by('provincia').all()
+    return render(request, "local.html", {"locales": locales})     
 
-@login_required
-def agregarAvatar(request):
-    if request.method == "POST":
-        miFormulario = AvatarFormulario(request.POST, request.FILES)
-        if miFormulario.is_valid():
-            u = User.objects.get(username = request.user)
-            avatar = Avatar(user = u, imagen = miFormulario.cleaned_data['imagen'])
-            avatar.save()
-            return render(request, "inicio.html")
-    else:
-        miFormulario = AvatarFormulario()
-    return render(request, "agregarAvatar.html", {"miFormulario": miFormulario})            
+def miCuenta(request):
+    perfil = User.objects.get(username = request.user)
+    return render(request, "miCuenta.html", {"perfil": perfil})    
 
 #---------------------COMUNIDAD-----------------------------------------------------
 
 @login_required
 def comunidad(request):
-    posts = Post.objects.order_by('fecha').all()
+    posts = Post.objects.order_by('-fecha').all()
     if request.method == 'POST':
         miFormulario = PostFormulario(request.POST, request.FILES)
-        print(miFormulario)
-        print("--------------------------------------------------------------------")
-
         if miFormulario.is_valid():
             user = User.objects.get(username = request.user)
+            print(request.user)
+            print("--------------------------------------------------------------------")
             informacion = miFormulario.cleaned_data    
             post = Post(user=user, contenido=informacion['contenido'], imagen=informacion['imagen'])
             post.save()
             miFormulario = PostFormulario()
-            mensaje = "¡Tu post ha sido creado con éxito!"
-            render(request, "comunidad.html", {"miFormulario": miFormulario, "mensaje": mensaje, "post": post})
             return redirect('Comunidad')           
     else:   
-        miFormulario = PostFormulario()  
-        post = Post.objects.get(id=id)     
+        miFormulario = PostFormulario()     
     return render(request, "comunidad.html", {"miFormulario": miFormulario, "posts": posts})         
 
+@login_required
+def comentario(request, id_post):
+    if request.method == "POST":
+        miFormulario = ComentarioFormulario(request.POST)
+        if miFormulario.is_valid():
+            user = User.objects.get(username = request.user)
+            post = Post.objects.get(id = id_post)
+            comentario = Comentario(user = user, post = post, contenido = miFormulario.cleaned_data['contenido'])
+            comentario.save()
+            mensaje = "¡Tu comentario ha sido agregado con éxito!"
+            return render(request, "comentario.html", {"miFormulario": miFormulario, "comentario":comentario} )
+    else:
+        miFormulario = ComentarioFormulario()
+    return render(request, "comentario.html", {"miFormulario": miFormulario})    
 
+def eliminarComentario(request, id):
+    comentario = Comentario.objects.get(id = id)
+    comentario.delete()
+    return redirect('Comunidad')
+
+def editarComentario(request, id):
+    comentario = Comentario.objects.get(id = id)
+    if request.method == 'POST':
+        miFormulario = ComentarioFormulario(request.POST)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data    
+            comentario.contenido = informacion["contenido"]
+            comentario.save()
+            miFormulario = ComentarioFormulario()
+            mensaje = "¡Tu comentario fue modificado correctamente!."
+            return render(request, "editarComentario.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    else:
+         miFormulario = ComentarioFormulario(initial={"contenido": comentario.contenido})
+    return render(request, "editarComentario.html", {"miFormulario": miFormulario})  
+
+def eliminarPost(request, id):
+    post = Post.objects.get(id = id)
+    post.delete()
+    return redirect('Comunidad')
+
+def editarPost(request, id):
+    post = Post.objects.get(id = id)
+    if request.method == 'POST':
+        miFormulario = PostFormulario(request.POST, request.FILES)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data    
+            post.contenido = informacion["contenido"]
+            post.imagen = informacion['imagen']
+            post.save()
+            miFormulario = PostFormulario()
+            mensaje = "¡Tu post fue modificado correctamente!."
+            return render(request, "editarPost.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    else:
+         miFormulario = PostFormulario(initial={"contenido": post.contenido, "imagen": post.imagen})
+    return render(request, "editarPost.html", {"miFormulario": miFormulario})      
