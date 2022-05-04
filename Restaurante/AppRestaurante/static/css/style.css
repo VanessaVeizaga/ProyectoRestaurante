@@ -43,7 +43,7 @@ h2 {
 }
 section.contenido {
     background-color: rgb(240, 205, 142) !important;
-    width: 500px;
+    width: 550px;
     margin: 0 auto;
     padding-top: 10px !important;
     padding-bottom: 20px !important;
@@ -67,4 +67,9 @@ p, h3, h4, h5, h6 {
     margin-left: 5px !important;
     color: darkblue !important;  
     font-size: 16px;
+}
+p.fecha {
+    margin-left: 5px !important;
+    font-size: 15px !important;
+    margin-bottom: 0px !important;
 }

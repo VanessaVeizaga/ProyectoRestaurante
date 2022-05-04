@@ -15,8 +15,47 @@
     <p><b>Apellido: </b>{{user.last_name}}</p>
     <p><b>E-mail: </b>{{user.email}}</p>
     <a class="link" href="{% url 'EditarPerfil' %}">Editar perfil</a>
+    <br><br>
+    
+    <h5>Mensajes:</h5>
+    {% if user.mensajes_entrantes.no_leidos.all %}
+        <p>Tienes {{len(user.mensajes_entrantes.no_leidos.all)}} mensajes no leídos</p>
+    <ul style="list-style-position: outside;">
+        {% for reserva in  user.reservas.all%}
+        <li><b>Local:</b> {{reserva.local.direccion}} <br>
+            <b>Fecha:</b> {{reserva.dia}} <br>
+            <b>Hora:</b> {{reserva.horario}} hs        
+        </li>
+        <a style="color: darkblue; font-size: small;" href="{% url 'EliminarReserva' reserva.id %}">Eliminar</a>
+        <a style="color: darkblue; font-size: small;" href="{% url 'Reserva' %}">Hacer nueva reserva</a>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-<br>
-<a style="color: black;", href= "{% url 'ActualizarMenu' %}">Actualizar menús</a>
+    {% if user.reservas.all %}
+        <h5>Reservas:</h5>
+        <ul style="list-style-position: outside;">
+            {% for reserva in  user.reservas.all%}
+            <li><b>Local:</b> {{reserva.local.direccion}} <br>
+                <b>Fecha:</b> {{reserva.dia}} <br>
+                <b>Hora:</b> {{reserva.horario}} hs        
+            </li>
+            <a style="color: darkblue; font-size: small;" href="{% url 'EliminarReserva' reserva.id %}">Eliminar</a>
+            <a style="color: darkblue; font-size: small;" href="{% url 'Reserva' %}">Hacer nueva reserva</a>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if user.posts.all %}
+        <h5>Posts:</h5>
+        <ul style="list-style-position: outside;">
+            {% for post in  user.posts.all%}
+            <li><b>Post</b> creado el día {{post.fecha}}
+                <a style="color: darkblue; font-size: small;" href="{% url 'DetallePost' post.id %}">Ver</a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}   
+    
 </section>    
 {% endblock contenidoQueCambia %}

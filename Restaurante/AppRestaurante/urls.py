@@ -29,4 +29,10 @@ urlpatterns = [
     path('editarComentario/<id>', views.editarComentario, name="EditarComentario"),
     path('eliminarPost/<id>', views.eliminarPost, name="EliminarPost"),
     path('editarPost/<id>', views.editarPost, name="EditarPost"),
+    path('eliminarReserva/<id>', views.eliminarReserva, name="EliminarReserva"),
+    path('detallePost/<id>', views.detallePost, name="DetallePost"),
+    path('perfil/<id_user>', views.perfil, name="Perfil"),
+    path('mensaje/<id_destinatario>', views.mensaje, name="Mensaje"),
+
+
 ]

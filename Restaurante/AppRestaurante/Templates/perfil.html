@@ -1,0 +1,21 @@
+{% extends 'padre.html' %}
+
+{% load static %}
+
+{% block title %}Mi cuenta{% endblock title %}
+
+
+{% block contenidoQueCambia %}
+
+<section style="margin-bottom: 30px;" class="contenido">
+    <h2>{{perfil.username}}</h2>
+    <div class="perfil" style="background-image: url('{{perfil.imagen.url}}');"></div>
+    <p><b>Nombre: </b>{{perfil.first_name}}</p>
+    <p><b>Apellido: </b>{{perfil.last_name}}</p>
+    <p><b>Miembro desde: </b>{{perfil.date_joined}}</p>
+    <a href="{% url 'Mensaje' perfil.id %}">Enviar mensaje</a> 
+    <br><br>
+  
+          
+</section>    
+{% endblock contenidoQueCambia %}

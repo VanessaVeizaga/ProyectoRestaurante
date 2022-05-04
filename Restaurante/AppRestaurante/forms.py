@@ -21,7 +21,7 @@ class ReservaFormulario(forms.Form):
     horarios = opciones = (("10:00","10:00"), ("12:00","12:00"), ("14:00","14:00"), ("16:00","16:00"), ("18:00","18:00"), ("20:00","20:00"), ("22:00","22:00"))
     dia = forms.DateField(label="Fecha", widget= forms.TextInput(attrs={'type':'date'}))
     horario = forms.ChoiceField(choices=horarios)
-    cantidad_personas = forms.IntegerField(label="Cantidad de personas", min_value=1)
+    cantidad_personas = forms.IntegerField(label="N° de personas", min_value=1)
     local = forms.ModelChoiceField(queryset=Local.objects.all())
 
 class ContactoFormulario(forms.Form):
@@ -39,7 +39,7 @@ class UserRegisterForm(UserCreationForm):
     imagen = forms.ImageField(label="Foto")
     password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Repetir contraseña", widget=forms.PasswordInput)  
-    imagen = forms.ImageField(label="Foto")
+    imagen = forms.ImageField(label="Foto", required=False)
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'imagen', 'password1', 'password2']
@@ -49,7 +49,7 @@ class UserEditForm(UserCreationForm):
     email = forms.EmailField(label = "Modificar e-mail:")
     first_name = forms.CharField(label = "Modificar nombre")
     last_name = forms.CharField(label = "Modificar apellido")
-    imagen = forms.ImageField(label="Modificar foto")
+    imagen = forms.ImageField(label="Modificar foto", required=False)
     password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Repetir contraseña", widget=forms.PasswordInput)  
     
@@ -59,10 +59,12 @@ class UserEditForm(UserCreationForm):
         help_texts = {k:"" for k in fields}  
 
 class PostFormulario(forms.Form):
-    fecha = datetime.now()
     contenido = forms.CharField(widget=forms.Textarea, label="Escribe aquí")
-    imagen = forms.ImageField(label="Puedes compartir una foto aquí")
+    imagen = forms.ImageField(label="Puedes compartir una foto aquí", required=False)
 
-class ComentarioFormulario(forms.Form):
-    fecha = datetime.now()    
+class ComentarioFormulario(forms.Form):    
+    contenido = forms.CharField(widget=forms.Textarea)
+
+class MensajeFormulario(forms.Form):    
+    asunto = forms.CharField(max_length=30)
     contenido = forms.CharField(widget=forms.Textarea)

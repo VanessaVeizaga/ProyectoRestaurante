@@ -8,6 +8,8 @@ admin.site.register(Contacto)
 admin.site.register(User)
 admin.site.register(Post)
 admin.site.register(Comentario)
+admin.site.register(Mensaje)
+
 
 
 

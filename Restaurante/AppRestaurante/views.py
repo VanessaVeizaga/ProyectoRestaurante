@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import*
 from .forms import*
 
@@ -38,6 +39,13 @@ def reserva(request):
     else:
         miFormulario = ReservaFormulario()
     return render(request, "reserva.html", {"miFormulario": miFormulario})
+
+@login_required
+def eliminarReserva(request, id):
+    reserva = Reserva.objects.get(id = id)
+    reserva.delete()
+    return render(request, "miCuenta.html")
+    
 
 def contacto(request):
     if request.method == 'POST':
@@ -219,6 +227,7 @@ def local(request):
 
 def miCuenta(request):
     perfil = User.objects.get(username = request.user)
+   # reservas = Reserva.objects.get(username = request.user)
     return render(request, "miCuenta.html", {"perfil": perfil})    
 
 #---------------------COMUNIDAD-----------------------------------------------------
@@ -296,3 +305,27 @@ def editarPost(request, id):
     else:
          miFormulario = PostFormulario(initial={"contenido": post.contenido, "imagen": post.imagen})
     return render(request, "editarPost.html", {"miFormulario": miFormulario})      
+
+def detallePost(request, id):
+    post = Post.objects.get(id = id)
+    return render(request, "detallePost.html", {"post": post})  
+
+@login_required
+def mensaje(request, id_destinatario):
+    if request.method == "POST":
+        miFormulario = MensajeFormulario(request.POST)
+        if miFormulario.is_valid():
+            user = User.objects.get(username = request.user)
+            destinatario = User.objects.get(id = id_destinatario)
+            mensaje = Mensaje(user = user, destinatario = destinatario, asunto = miFormulario.cleaned_data['asunto'], contenido = miFormulario.cleaned_data['contenido'])
+            mensaje.save()
+            messages.success(request, "¡Tu mensaje se ha enviado exitosamente!")
+            return render(request, "mensaje.html") 
+    else:
+        miFormulario = MensajeFormulario()
+    return render(request, "mensaje.html")  
+
+@login_required
+def perfil(request, id_user):
+    perfil = User.objects.get(id = id_user)
+    return render(request, "perfil.html", {"perfil": perfil})  

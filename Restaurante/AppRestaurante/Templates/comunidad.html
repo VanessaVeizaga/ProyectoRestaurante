@@ -11,6 +11,10 @@
 <section class="contenido">
 
     <h4>Compartí tu experiencia en nuestros locales:</h4>
+
+    {% for msg in messages  %}
+      {{msg}}
+    {% endfor %}
     
     {% if miFormulario.errors %}
         
@@ -36,19 +40,24 @@
         <br>
         --------------------------------------------------------------------------------
         <br>
-        <div class="avatar" style="background-image: url('{{post.user.imagen.url}}');"></div>
-         <strong>    
-            {{post.user}} - 
-            {{post.fecha}} <br>         
-        </strong>
+        <a style="color: black;"href="{% url 'Perfil' post.user.id %}">
+            <div class="avatar" style="background-image: url('{{post.user.imagen.url}}');"></div>
+            <strong>    
+               {{post.user}} - 
+               {{post.fecha}} <br>         
+           </strong>     
+        </a>
         <p style="margin-left: 5px;">{{post.contenido}}</p>
-        <img src="{{post.imagen.url}}", width="500px">  
+        
+        {% if post.imagen %}
+            <img src="{{post.imagen.url}}", width="550px"> 
+        {% endif %}
+        <p class="fecha">{{post.fecha}}</p>   
         {% if request.user == post.user %}
-            <a style="color: darkblue; font-size: small;" href="{% url 'EliminarPost' post.id %}">Eliminar</a>
-            <a style="color: darkblue; font-size: small;" href="{% url 'EditarPost' post.id %}">Editar</a>
+            <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarPost' post.id %}">Eliminar</a>
+            <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarPost' post.id %}">Editar</a>
          {% endif %}
         <br>
-        <p>{{post.fecha}}</p>
         <h6>Comentarios...</h6>
         {% if not post.comentarios.all %}
             <p>Todavía no hay comentarios...<a class="link"; href="{% url 'Comentario' post.id %}">Agrega uno</a></p> 
@@ -56,16 +65,18 @@
         <a class="link" href="{% url 'Comentario' post.id %}">Agrega un comentario..</a> 
         <br><br>
             {% for comentario in post.comentarios.all %}
-                <div class="avatar" style="background-image: url('{{comentario.user.imagen.url}}');"></div>
-                <strong style="font-size: 14px;">    
+                <a style="color: black;"href="{% url 'Perfil' post.user.id %}">
+                    <div class="avatar" style="background-image: url('{{comentario.user.imagen.url}}');"></div>
+                 <strong style="font-size: 14px;">    
                      {{comentario.user}} - 
                      {{comentario.fecha}}
-                </strong>
+                 </strong>
+                 </a>    
                 <br>
                 <p style="font-size: 15px; margin-bottom: 5px;">{{comentario.contenido}}</p>
                 {% if request.user == comentario.user %}
-                    <a style="color: darkblue; font-size: small;" href="{% url 'EliminarComentario' comentario.id %}">Eliminar</a>
-                    <a style="color: darkblue; font-size: small;" href="{% url 'EditarComentario' comentario.id %}">Editar</a>
+                    <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarComentario' comentario.id %}">Eliminar</a>
+                    <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarComentario' comentario.id %}">Editar</a>
                 {% endif %}
             {% endfor %}     
         {% endif %}
@@ -73,5 +84,3 @@
 </section>
 
 {% endblock contenidoQueCambia %}
-
-<a href=""></a>

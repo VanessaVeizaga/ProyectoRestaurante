@@ -1,0 +1,43 @@
+{% extends 'padre.html' %}
+
+{% load static %}
+
+{% block title %}Mi Post{% endblock title %}
+
+{% block contenidoQueCambia %}
+
+<section class="contenido">
+
+    <p style="margin-left: 5px;">{{post.contenido}}</p>
+        
+        {% if post.imagen %}
+            <img src="{{post.imagen.url}}", width="500px"> 
+        {% endif %}
+        <br>
+        <p class="fecha">{{post.fecha}}</p> 
+        <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarPost' post.id %}">Eliminar</a>
+        <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarPost' post.id %}">Editar</a> 
+        <h6>Comentarios...</h6>
+        {% if not post.comentarios.all %}
+            <p>Todavía no hay comentarios...<a class="link"; href="{% url 'Comentario' post.id %}">Agrega uno</a></p> 
+        {% else %}   
+        <a class="link" href="{% url 'Comentario' post.id %}">Agrega un comentario..</a> 
+        <br><br>
+            {% for comentario in post.comentarios.all %}
+                <div class="avatar" style="background-image: url('{{comentario.user.imagen.url}}');"></div>
+                <strong style="font-size: 14px;">    
+                     {{comentario.user}} - 
+                     {{comentario.fecha}}
+                </strong>
+                <br>
+                <p style="font-size: 15px; margin-bottom: 5px;">{{comentario.contenido}}</p>
+                {% if request.user == comentario.user %}
+                    <a style="color: darkblue; font-size: small;" href="{% url 'EliminarComentario' comentario.id %}">Eliminar</a>
+                    <a style="color: darkblue; font-size: small;" href="{% url 'EditarComentario' comentario.id %}">Editar</a>
+                {% endif %}
+            {% endfor %}     
+        {% endif %}
+        
+</section>
+
+{% endblock contenidoQueCambia %}
