@@ -4,18 +4,31 @@
 
 {% block title %}Carta{% endblock title %}
 
-{% block header %}<h2>Carta</h2>{% endblock header %}
-   
+{% block header %}<h2>Nuestra Carta</h2>{% endblock header %}
+  
 {% block contenidoQueCambia %}
 
-<br>
-{% for m in menus  %}
-    <li>{{m}}</li>
-    <P>{{m.descripcion}}</P>
-    <img src="{{m.imagen.url}}", height="150px">
-    <br>
-{% endfor %}
-<br>
-<a style="color: black;", href= "{% url 'ActualizarMenu' %}">Actualizar menús</a>
+<section style="margin-bottom: 30px;" class="contenido">
 
+    {% for tipo in tipos %}
+        <a class="link"; href="#{{tipo}}">{{tipo}}</a>
+    {% endfor %} 
+    <br><br>
+    {% for tipo in tipos %}
+        <h5 id="{{tipo}}">{{tipo}}</h5>             
+        {% for menu in menus %}      
+            {% if menu.tipo == tipo %} 
+                <p style="margin-left: 5px; font-size: medium;"><b>{{menu.nombre}}</b></p>
+                <img src="{{menu.imagen.url}}", width="550px">
+                <p style="margin-left: 5px;">{{menu.descripcion}}</p>
+                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarMenu' menu.id %}">Eliminar</a>
+                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarMenu' menu.id %}">Editar</a>        
+            {% endif %} 
+        {% endfor %}
+        <br><br>
+    {% endfor %}
+<br><br>
+    <a class="link"; href="{% url 'AgregarMenu' %}">Agregar menu</a></p> 
+
+</section>    
 {% endblock contenidoQueCambia %}

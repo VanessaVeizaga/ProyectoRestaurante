@@ -18,19 +18,23 @@
     <br><br>
     
     <h5>Mensajes:</h5>
-    {% if user.mensajes_entrantes.no_leidos.all %}
-        <p>Tienes {{len(user.mensajes_entrantes.no_leidos.all)}} mensajes no leídos</p>
-    <ul style="list-style-position: outside;">
-        {% for reserva in  user.reservas.all%}
-        <li><b>Local:</b> {{reserva.local.direccion}} <br>
-            <b>Fecha:</b> {{reserva.dia}} <br>
-            <b>Hora:</b> {{reserva.horario}} hs        
-        </li>
-        <a style="color: darkblue; font-size: small;" href="{% url 'EliminarReserva' reserva.id %}">Eliminar</a>
-        <a style="color: darkblue; font-size: small;" href="{% url 'Reserva' %}">Hacer nueva reserva</a>
-        {% endfor %}
-    </ul>
+    {% if mensajes %}
+        <p>
+            Tienes {{mensajes}} mensaje/s no leído/s.
+            <a class="link" href="{% url 'Buzon' user.id %}">Ir al Buzón</a>
+        </p>
+    {% else %}
+        <p>
+            No tienes mensajes nuevos.
+            <a class="link" href="{% url 'Buzon' user.id %}">Ir al Buzón</a>
+        </p>
+      
     {% endif %}
+    <br>
+        
+         
+    
+
 
     {% if user.reservas.all %}
         <h5>Reservas:</h5>

@@ -59,11 +59,12 @@ class Comentario(models.Model):
     contenido = models.TextField(max_length=255) 
 
 class Mensaje(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="remitente")
-    destinatario = models.ForeignKey(User, on_delete=models.CASCADE, related_name="destinatario")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="mensajes")
+    destinatario = models.ForeignKey(User, on_delete=models.CASCADE, related_name="mensajes_entrantes")
     fecha = models.DateTimeField(auto_now_add=True)
     asunto = models.CharField(max_length=30)
     contenido = models.TextField(max_length=255) 
+    no_leido = models.BooleanField(default=True)
     
 
     

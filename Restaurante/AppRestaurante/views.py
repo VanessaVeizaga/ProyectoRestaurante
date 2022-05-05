@@ -46,6 +46,7 @@ def eliminarReserva(request, id):
     reserva.delete()
     return render(request, "miCuenta.html")
     
+#--------------------CONTACTO----------------------------------------------------------------------------------
 
 def contacto(request):
     if request.method == 'POST':
@@ -60,30 +61,23 @@ def contacto(request):
         miFormulario = ContactoFormulario()
     return render(request, "contacto.html", {"miFormulario": miFormulario})
 
-def busquedaLocal(request):
-    return render(request, "busquedaLocal.html") 
-
-def buscar(request):
-    if request.GET["provincia"]:
-        provincia = request.GET["provincia"]
-        locales = Local.objects.filter(provincia__icontains = provincia)
-        return render(request, "resultadoBusqueda.html", {"locales": locales, "provincia": provincia})
-    else:
-      return HttpResponse("No enviaste datos") 
-
 #---------------LOCAL-----------------------------------------------------------------------------------
-
+ 
 def local(request):
-    locales = Local.objects.order_by('provincia').all()
-    return render(request, "local.html", {"locales": locales})      
+    provincias = set()
+    locales = Local.objects.all()
+    for local in locales:
+        provincias.add(local.provincia)
+    provincias = sorted(list(provincias))
+    return render(request, "local.html", {"locales": locales, "provincias": provincias})  
 
 def agregarLocal(request):
     if request.method == 'POST':
-        miFormulario = LocalFormulario(request.POST)
+        miFormulario = LocalFormulario(request.POST, request.FILES)
         print(miFormulario)
         if miFormulario.is_valid:
             informacion = miFormulario.cleaned_data    
-            local = Local(provincia=informacion['provincia'], localidad=informacion['localidad'], direccion=informacion['direccion'], telefono=informacion['telefono'], capacidad=informacion['capacidad'])
+            local = Local(provincia=informacion['provincia'], localidad=informacion['localidad'], direccion=informacion['direccion'], telefono=informacion['telefono'], capacidad=informacion['capacidad'], imagen=informacion['imagen'])
             local.save()
             miFormulario = LocalFormulario()
             mensaje = "Se agregó con éxito el local ubicado en: "
@@ -99,13 +93,17 @@ def actualizarLocal(request):
 def eliminarLocal(request, id):
     local = Local.objects.get(id = id)
     local.delete()
-    locales = Local.objects.order_by('provincia').all()
-    return render(request, "actualizarLocal.html", {"locales": locales})
+    provincias = set()
+    locales = Local.objects.all()
+    for local in locales:
+        provincias.add(local.provincia)
+    provincias = sorted(list(provincias))
+    return render(request, "local.html", {"locales": locales, "provincias": provincias})
 
 def editarLocal(request, id):
     local = Local.objects.get(id = id)
     if request.method == 'POST':
-        miFormulario = LocalFormulario(request.POST)
+        miFormulario = LocalFormulario(request.POST, request.FILES)
         if miFormulario.is_valid():
             informacion = miFormulario.cleaned_data    
             local.provincia = informacion["provincia"]
@@ -113,19 +111,24 @@ def editarLocal(request, id):
             local.direccion = informacion["direccion"]
             local.telefono = informacion["telefono"]
             local.capacidad = informacion["capacidad"]
+            local.imagen = informacion["imagen"]
             local.save()
             miFormulario = LocalFormulario()
             mensaje = "Se guardaron correctamente los cambios."
             return render(request, "editarLocal.html", {"miFormulario": miFormulario, "mensaje": mensaje})
     else:
-         miFormulario = LocalFormulario(initial={"provincia": local.provincia, "localidad": local.localidad, "direccion": local.direccion, "telefono": local.telefono, "capacidad": local.capacidad})
+         miFormulario = LocalFormulario(initial={"provincia": local.provincia, "localidad": local.localidad, "direccion": local.direccion, "telefono": local.telefono, "capacidad": local.capacidad, "imagen": local.imagen})
     return render(request, "editarLocal.html", {"miFormulario": miFormulario, "id": id})
 
 #-------------------------MENÚ-----------------------------------------------------------------------------------
 
 def menu(request):
-    menus = Menu.objects.order_by('tipo').all()
-    return render(request, "menu.html", {"menus": menus})    
+    tipos = set()
+    menus = Menu.objects.all()
+    for menu in menus:
+        tipos.add(menu.tipo)
+    tipos = sorted(list(tipos))
+    return render(request, "menu.html", {"menus": menus, "tipos": tipos})    
 
 def agregarMenu(request):
     if request.method == 'POST':
@@ -148,8 +151,12 @@ def actualizarMenu(request):
 def eliminarMenu(request, id):
     menu = Menu.objects.get(id = id)
     menu.delete()
-    menus = Menu.objects.order_by('tipo').all()
-    return render(request, "actualizarMenu.html", {"menus": menus})
+    tipos = set()
+    menus = Menu.objects.all()
+    for menu in menus:
+        tipos.add(menu.tipo)
+    tipos = sorted(list(tipos))
+    return render(request, "menu.html", {"menus": menus, "tipos": tipos})
 
 def editarMenu(request, id):
     menu = Menu.objects.get(id = id)
@@ -221,14 +228,11 @@ def editarPerfil(request):
         miFormulario = UserEditForm(initial={"first_name": usuario.first_name, "last_name": usuario.last_name, "email": usuario.email, "imagen": usuario.imagen})
     return render(request, "editarPerfil.html", {"miFormulario": miFormulario})    
 
-def local(request):
-    locales = Local.objects.order_by('provincia').all()
-    return render(request, "local.html", {"locales": locales})     
-
 def miCuenta(request):
     perfil = User.objects.get(username = request.user)
-   # reservas = Reserva.objects.get(username = request.user)
-    return render(request, "miCuenta.html", {"perfil": perfil})    
+    mensajes = len(Mensaje.objects.filter(destinatario = request.user).filter(no_leido = True))
+
+    return render(request, "miCuenta.html", {"perfil": perfil, "mensajes": mensajes})    
 
 #---------------------COMUNIDAD-----------------------------------------------------
 
@@ -239,8 +243,6 @@ def comunidad(request):
         miFormulario = PostFormulario(request.POST, request.FILES)
         if miFormulario.is_valid():
             user = User.objects.get(username = request.user)
-            print(request.user)
-            print("--------------------------------------------------------------------")
             informacion = miFormulario.cleaned_data    
             post = Post(user=user, contenido=informacion['contenido'], imagen=informacion['imagen'])
             post.save()
@@ -316,6 +318,7 @@ def mensaje(request, id_destinatario):
         miFormulario = MensajeFormulario(request.POST)
         if miFormulario.is_valid():
             user = User.objects.get(username = request.user)
+            global destinatario
             destinatario = User.objects.get(id = id_destinatario)
             mensaje = Mensaje(user = user, destinatario = destinatario, asunto = miFormulario.cleaned_data['asunto'], contenido = miFormulario.cleaned_data['contenido'])
             mensaje.save()
@@ -323,9 +326,22 @@ def mensaje(request, id_destinatario):
             return render(request, "mensaje.html") 
     else:
         miFormulario = MensajeFormulario()
-    return render(request, "mensaje.html")  
+        destinatario = User.objects.get(id = id_destinatario)
+    return render(request, "mensaje.html", {"miFormulario": miFormulario, "destinatario": destinatario})  
 
 @login_required
 def perfil(request, id_user):
     perfil = User.objects.get(id = id_user)
     return render(request, "perfil.html", {"perfil": perfil})  
+
+@login_required
+def buzon(request, id_user):
+    recibidos = Mensaje.objects.order_by('-fecha').filter(destinatario = id_user)
+    enviados = Mensaje.objects.order_by('-fecha').filter(user = id_user)
+    return render(request, "buzon.html", {"recibidos": recibidos, "enviados": enviados})  
+
+def leerMensaje(request, id):
+    mensaje = Mensaje.objects.get(id = id)
+    mensaje.no_leido = False
+    mensaje.save()
+    return render(request, "leerMensaje.html", {"mensaje": mensaje})  

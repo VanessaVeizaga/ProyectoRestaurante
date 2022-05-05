@@ -8,8 +8,6 @@ urlpatterns = [
     path('local/', views.local, name="Local"),
     path('reserva/', views.reserva, name="Reserva"),
     path('contacto/', views.contacto, name="Contacto"),
-    path('busquedaLocal/', views.busquedaLocal, name="BusquedaLocal"),
-    path('buscar/', views.buscar, name="Buscar"),
     path('actualizarLocal/', views.actualizarLocal, name="ActualizarLocal"),
     path('agregarLocal/', views.agregarLocal, name="AgregarLocal"),
     path('eliminarLocal/<id>', views.eliminarLocal, name="EliminarLocal"),
@@ -33,6 +31,8 @@ urlpatterns = [
     path('detallePost/<id>', views.detallePost, name="DetallePost"),
     path('perfil/<id_user>', views.perfil, name="Perfil"),
     path('mensaje/<id_destinatario>', views.mensaje, name="Mensaje"),
+    path('buzon/<id_user>', views.buzon, name="Buzon"),
+    path('leerMensaje/<id>', views.leerMensaje, name="LeerMensaje"),
 
 
 ]

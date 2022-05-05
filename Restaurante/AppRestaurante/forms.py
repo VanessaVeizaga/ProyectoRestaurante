@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User, Local
 
 class MenuFormulario(forms.Form):
-    opciones = (("Entrada","Entrada"), ("Plato principal","Plato Principal"), ("Postre","Postre"), ("Desayuno-Merienda","Desayuno-Merienda"))
+    opciones = (("Entradas","Entradas"), ("Platos principales","Platos Principales"), ("Postres","Postres"), ("Desayuno-Merienda","Desayuno-Merienda"))
     tipo = forms.ChoiceField(choices= opciones)
     nombre = forms.CharField(max_length=40)
     descripcion = forms.CharField(label="Descripción", max_length=128) 
@@ -16,6 +16,7 @@ class LocalFormulario(forms.Form):
     direccion = forms.CharField(label="Dirección", max_length=40) 
     telefono = forms.IntegerField(label="Teléfono")   
     capacidad = forms.IntegerField(label="Capacidad", widget= forms.TextInput(attrs={'placeholder':'Cantidad de reservas'}))  
+    imagen = forms.ImageField()
     
 class ReservaFormulario(forms.Form):
     horarios = opciones = (("10:00","10:00"), ("12:00","12:00"), ("14:00","14:00"), ("16:00","16:00"), ("18:00","18:00"), ("20:00","20:00"), ("22:00","22:00"))
@@ -68,3 +69,4 @@ class ComentarioFormulario(forms.Form):
 class MensajeFormulario(forms.Form):    
     asunto = forms.CharField(max_length=30)
     contenido = forms.CharField(widget=forms.Textarea)
+    no_leido = forms.BooleanField(required=False)

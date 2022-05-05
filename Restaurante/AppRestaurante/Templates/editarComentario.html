@@ -12,10 +12,8 @@
 <section class="formulario">
     <h4>Edita tu comentario:</h4>
     <p>{{mensaje}}</p>
-    {% if miFormulario.errors %}
-        
-        <p style="color: red;">Están mal los datos, revisar</p>
-            
+    {% if miFormulario.errors %}   
+        <p style="color: red;">Están mal los datos, revisar</p>       
     {% endif %}
          
     <form style="display: block;" method="POST">{% csrf_token %}   

@@ -6,13 +6,30 @@
 
 {% block header %}<h2>Locales</h2>{% endblock header %}
 
+    
 {% block contenidoQueCambia %}
-<br>
-{% for l in locales  %}
-    <li>{{l}}</li>
-    <br>
-{% endfor %}
-<br>
-<a style="color: black;", href= "{% url 'ActualizarLocal' %}">Actualizar locales</a>    
 
+<section style="margin-bottom: 30px;" class="contenido">
+    <h4>Nuestros locales están abiertos todos los días de 8:00 am a 1:00 am, ¡Te esperamos!</h4>
+    <br>
+    {% for provincia in provincias %}
+        <a class="link"; href="#{{provincia}}">{{provincia}}</a>
+    {% endfor %} 
+    <br><br>
+    {% for provincia in provincias %}
+        <h5 id="{{provincia}}">{{provincia}}</h5>             
+        {% for local in locales %}      
+            {% if local.provincia == provincia %} 
+                <p style="margin-left: 5px;"><b>{{local.localidad}}</b> - <b>Dirección:</b> {{local.direccion}} - <b>Teléfono:</b>  {{local.telefono}}</p>
+                <img src="{{local.imagen.url}}", width="550px">   
+                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarLocal' local.id %}">Eliminar</a>
+                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarLocal' local.id %}">Editar</a>        
+            {% endif %} 
+        {% endfor %}
+        <br><br>
+    {% endfor %}
+<br><br>
+    <a class="link"; href="{% url 'AgregarLocal' %}">Agregar local</a></p> 
+
+</section>    
 {% endblock contenidoQueCambia %}

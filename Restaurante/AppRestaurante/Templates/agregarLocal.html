@@ -7,8 +7,11 @@
     <title>Agregar local</title>
 </head>
 <body style="background-color: khaki;">
+    {% if miFormulario.errors %}   
+    <p style="color: red;">Están mal los datos, revisar</p>       
+    {% endif %}
     <h2>Agregar local:</h2>
-    <form action="" method="POST">{% csrf_token %}
+    <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
         <table style="text-align: left;">
             {{miFormulario.as_table}}
         </table>

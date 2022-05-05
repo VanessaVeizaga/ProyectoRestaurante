@@ -49,7 +49,7 @@ section.contenido {
     padding-bottom: 20px !important;
     margin-top: 20px;
 }
-.formulario {
+section.formulario {
     width: 400px;
     padding-top: 10px;
     display: block;
@@ -72,4 +72,16 @@ p.fecha {
     margin-left: 5px !important;
     font-size: 15px !important;
     margin-bottom: 0px !important;
+}
+table.buzon {
+    background-color: white;
+    width: 100%;
+    
+  
+}
+
+th.buzon, td.buzon {
+    border:solid 1px rgb(59, 57, 57) !important;
+
+
 }

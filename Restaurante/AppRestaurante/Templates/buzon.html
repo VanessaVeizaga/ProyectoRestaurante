@@ -1,0 +1,58 @@
+{% extends 'padre.html' %}
+
+{% load static %}
+
+{% block title %}Buzón{% endblock title %}
+
+{% block header %}<h2>Buzón</h2>{% endblock header %}
+
+    
+{% block contenidoQueCambia %}
+
+<section style="margin-bottom: 30px;" class="contenido">
+    <h5>Mensajes recibidos:</h5><br>
+    <table class="buzon">
+        <tr class="buzon">
+            <th class="buzon">Remitente</th>
+            <th class="buzon">Asunto</th>
+            <th class="buzon">Fecha</th>
+            <th class="buzon">Contenido</th>
+            <th class="buzon">Estado</th>
+
+        </tr>
+        
+        {% for mensaje in recibidos %}
+        <tr class="buzon">
+            <td class="buzon">{{mensaje.user}}</td>
+            <td class="buzon">{{mensaje.asunto}}</td>
+            <td class="buzon">{{mensaje.fecha}}</td>
+            <td class="buzon"><a href="{% url 'LeerMensaje' mensaje.id %}">Leer</a></td>
+            
+            {% if mensaje.no_leido %}
+                <td class="buzon">No leído</td>
+            {% else %}
+                <td class="buzon">Leído</td>
+            {% endif %}
+        </tr> 
+        {% endfor %}      
+    </table><br>
+    <h5>Mensajes enviados:</h5><br>
+    <table class="buzon">
+        <tr class="buzon">
+            <th class="buzon">Destinatario</th>
+            <th class="buzon">Asunto</th>
+            <th class="buzon">Fecha</th>
+            <th class="buzon">Contenido</th>
+        </tr>
+        
+        {% for mensaje in enviados %}
+        <tr class="buzon">
+            <td class="buzon">{{mensaje.destinatario}}</td>
+            <td class="buzon">{{mensaje.asunto}}</td>
+            <td class="buzon">{{mensaje.fecha}}</td>
+            <td class="buzon"><a href="{% url 'LeerMensaje' mensaje.id %}">Ver</a></td>
+        </tr> 
+        {% endfor %}      
+    </table>
+</section>    
+{% endblock contenidoQueCambia %}

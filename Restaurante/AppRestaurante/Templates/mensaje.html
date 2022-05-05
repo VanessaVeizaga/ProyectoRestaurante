@@ -8,9 +8,12 @@
 
 <section class="contenido">
 
-    <h5>Enviar mensaje privado: 
-        <div class="avatar" style="background-image: url('{{destinatario.imagen.url}}');"></div>             
-    </h5>
+    <h5>Enviar mensaje privado a: 
+        <div class="avatar" style="background-image: url('{{destinatario.imagen.url}}');"></div>
+        <strong style="font-size: 20px;">    
+            {{destinatario.username}} 
+        </strong>
+    </h5><br>
     {% for msg in messages  %}
        {{msg}}
     {% endfor %}
@@ -18,7 +21,7 @@
         <p style="color: red;">Están mal los datos, revisar</p>            
     {% endif %}
             
-    <form class ="form" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+    <form class="form" action="" method="POST">{% csrf_token %}
             
         <div class="mb-3">
             <label for="{{miFormulario.asunto.id_for_label}}" class="form-label">{{miFormulario.asunto.label_tag|capfirst}}</label>
