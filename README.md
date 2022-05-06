@@ -16,3 +16,5 @@ División de tareas:
 - Veizaga, Vanessa: 
                     - Templates, views y modelos de las secciones de Reservas, Comunidad, Mi Cuenta, y Buzón de  mensajes.
                     - Diseño y aplicación de estilos CSS.
+
+- Link a video sobre el proyecto: https://www.youtube.com/watch?v=laMyL3IQ6bY
