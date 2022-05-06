@@ -8,27 +8,32 @@
   
 {% block contenidoQueCambia %}
 
-<section style="margin-bottom: 30px;" class="contenido">
+{% if request.user.is_superuser %}
+<a style="float:left;" class="link"; href="{% url 'AgregarMenu' %}">Agregar menú</a></p> 
+{% endif %} 
 
+<section id="contenido" style="margin-bottom: 30px;" class="contenido">
+    <h4>Estos son los platos que podés disfrutar en nuestros locales...</h4><br>
     {% for tipo in tipos %}
         <a class="link"; href="#{{tipo}}">{{tipo}}</a>
     {% endfor %} 
     <br><br>
     {% for tipo in tipos %}
-        <h5 id="{{tipo}}">{{tipo}}</h5>             
+        <h4 id="{{tipo}}">{{tipo}}</h4> <br>            
         {% for menu in menus %}      
             {% if menu.tipo == tipo %} 
-                <p style="margin-left: 5px; font-size: medium;"><b>{{menu.nombre}}</b></p>
+                <p style="margin-left: 5px;"><b>{{menu.nombre}}</b></p>
                 <img src="{{menu.imagen.url}}", width="550px">
-                <p style="margin-left: 5px;">{{menu.descripcion}}</p>
-                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarMenu' menu.id %}">Eliminar</a>
-                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarMenu' menu.id %}">Editar</a>        
+                <p style="margin-left: 5px;">{{menu.descripcion}}</p> 
+                {% if request.user.is_superuser %}
+                    <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarMenu' menu.id %}">Eliminar</a>
+                    <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarMenu' menu.id %}">Editar</a>        
+                {% endif %}    
+                <a style="color: darkblue; font-size: small; margin-left: 5px; float: right; margin-right: 5px;" href="#">Ir al comienzo</a> 
             {% endif %} 
         {% endfor %}
         <br><br>
     {% endfor %}
-<br><br>
-    <a class="link"; href="{% url 'AgregarMenu' %}">Agregar menu</a></p> 
-
 </section>    
+
 {% endblock contenidoQueCambia %}

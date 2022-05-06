@@ -6,18 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 </head>
-<body>
+<body style="background-color: khaki;">
     {% if miFormulario.errors %}
     <p style="color: red;">Están mal los datos, revisar</p>      
     {% endif %}
-    
+    <p>{{mensaje}}</p>
     <form action="" method="POST"> {% csrf_token %}
         {{form.as_p}}
         <button type="submit">Iniciar sesión</button>
     </form>
     <p>¿No estás registrado/a?</p>
-    <br>
+
     <a href="{% url 'Register' %}">Regístrate</a>
+    <br><br>
+    <a href="{% url 'Inicio' %}">Ir a Inicio</a>
 
 </body>
 </html>

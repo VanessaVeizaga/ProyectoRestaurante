@@ -20,7 +20,7 @@
     <h5>Mensajes:</h5>
     {% if mensajes %}
         <p>
-            Tienes {{mensajes}} mensaje/s no leído/s.
+            Tienes <b>{{mensajes}}</b> mensaje/s no leído/s.
             <a class="link" href="{% url 'Buzon' user.id %}">Ir al Buzón</a>
         </p>
     {% else %}
@@ -32,17 +32,14 @@
     {% endif %}
     <br>
         
-         
-    
-
-
     {% if user.reservas.all %}
         <h5>Reservas:</h5>
         <ul style="list-style-position: outside;">
             {% for reserva in  user.reservas.all%}
             <li><b>Local:</b> {{reserva.local.direccion}} <br>
                 <b>Fecha:</b> {{reserva.dia}} <br>
-                <b>Hora:</b> {{reserva.horario}} hs        
+                <b>Hora:</b> {{reserva.horario}} hs <br>
+                <b>N° de personas:</b> {{reserva.cantidad_personas}}<br>        
             </li>
             <a style="color: darkblue; font-size: small;" href="{% url 'EliminarReserva' reserva.id %}">Eliminar</a>
             <a style="color: darkblue; font-size: small;" href="{% url 'Reserva' %}">Hacer nueva reserva</a>
@@ -53,13 +50,24 @@
     {% if user.posts.all %}
         <h5>Posts:</h5>
         <ul style="list-style-position: outside;">
-            {% for post in  user.posts.all%}
+            {% for post in user.posts.all%}
             <li><b>Post</b> creado el día {{post.fecha}}
                 <a style="color: darkblue; font-size: small;" href="{% url 'DetallePost' post.id %}">Ver</a>
             </li>
             {% endfor %}
         </ul>
     {% endif %}   
-    
+
+    {% if user.comentarios.all %}
+    <h5>Posts que comentaste:</h5>
+    <ul style="list-style-position: outside;">
+        {% for comentario in user.comentarios.all %}
+        <li><b>Post</b> comentado el día {{comentario.fecha}}
+            <a style="color: darkblue; font-size: small;" href="{% url 'DetallePost' comentario.post.id %}">Ver</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}      
 </section>    
+
 {% endblock contenidoQueCambia %}

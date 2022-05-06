@@ -28,14 +28,27 @@ div.avatar {
   }
 
   div.perfil {
-    height: 100px;
-    width: 100px;
+    height: 130px;
+    width: 130px;
     background-repeat: no-repeat;
     background-position: 50%;
     border-radius: 50%;
     background-size: 120% auto;
     margin: 0 auto;
   }
+  div.about {
+    float: left;
+    height: 120px;
+    width: 120px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 50%;
+    background-size: 120% auto;
+    display: inline-block;
+    vertical-align: top !important;
+    margin: 10px !important;
+  }
+
 h2 {
     text-align: center;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -52,16 +65,17 @@ section.contenido {
 section.formulario {
     width: 400px;
     padding-top: 10px;
-    display: block;
-    margin-left: 5px;
+    display: block !important;
+    margin-left: 5px !important;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 p, h3, h4, h5, h6 {
     margin-left: 5px !important;
     margin-bottom: 2px !important;
 }
-.form {
+form.formulario {
     margin:5px !important;
+    box-sizing: border-box !important;
 }
 .link{
     margin-left: 5px !important;
@@ -75,13 +89,13 @@ p.fecha {
 }
 table.buzon {
     background-color: white;
-    width: 100%;
-    
-  
+    width: 100%;  
 }
 
 th.buzon, td.buzon {
     border:solid 1px rgb(59, 57, 57) !important;
+}
 
-
+a.small {
+    
 }

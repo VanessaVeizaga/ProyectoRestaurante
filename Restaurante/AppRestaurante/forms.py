@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Local
 
+
 class MenuFormulario(forms.Form):
     opciones = (("Entradas","Entradas"), ("Platos principales","Platos Principales"), ("Postres","Postres"), ("Desayuno-Merienda","Desayuno-Merienda"))
     tipo = forms.ChoiceField(choices= opciones)
@@ -21,26 +22,26 @@ class LocalFormulario(forms.Form):
 class ReservaFormulario(forms.Form):
     horarios = opciones = (("10:00","10:00"), ("12:00","12:00"), ("14:00","14:00"), ("16:00","16:00"), ("18:00","18:00"), ("20:00","20:00"), ("22:00","22:00"))
     dia = forms.DateField(label="Fecha", widget= forms.TextInput(attrs={'type':'date'}))
-    horario = forms.ChoiceField(choices=horarios)
+    horario = forms.ChoiceField(label="Hora", choices=horarios)
     cantidad_personas = forms.IntegerField(label="N° de personas", min_value=1)
     local = forms.ModelChoiceField(queryset=Local.objects.all())
 
 class ContactoFormulario(forms.Form):
     motivo = forms.ChoiceField(choices=(("Consulta","Consulta"), ("Sugerencia","Sugerencia"), ("Reclamo","Reclamo")))
-    nombre_completo = forms.CharField(max_length=50)
+    nombre_completo = forms.CharField(label ="Nombre", max_length=50)
     telefono = forms.IntegerField(label="Teléfono") 
     email = forms.EmailField(max_length=30)
-    mensaje = forms.CharField(max_length=256)
+    mensaje = forms.CharField(widget=forms.Textarea)
     local = forms.ModelChoiceField(queryset=Local.objects.all(), required=False)
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(label = "E-mail")
     first_name = forms.CharField(label = "Nombre")
     last_name = forms.CharField(label = "Apellido")
-    imagen = forms.ImageField(label="Foto")
+    imagen = forms.ImageField(label="Foto", required=False)
     password1 = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
     password2 = forms.CharField(label="Repetir contraseña", widget=forms.PasswordInput)  
-    imagen = forms.ImageField(label="Foto", required=False)
+    
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'imagen', 'password1', 'password2']

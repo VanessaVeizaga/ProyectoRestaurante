@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from ckeditor.fields import RichTextField
 
 class User(AbstractUser):
     imagen = models.ImageField(upload_to='avatar', default='avatar/perfil.png', null=True, blank=True)
@@ -40,7 +40,7 @@ class Contacto(models.Model):
     nombre_completo = models.CharField(max_length=50)
     telefono = models.CharField(max_length=15) 
     email = models.EmailField()
-    mensaje = models.CharField(max_length=255)
+    mensaje = RichTextField(blank=True, null=True) 
     local = models.ForeignKey(Local, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
@@ -54,7 +54,7 @@ class Post(models.Model):
 
 class Comentario(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True, related_name="comentarios")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comentarios")
     fecha = models.DateTimeField(auto_now_add=True)
     contenido = models.TextField(max_length=255) 
 
@@ -63,11 +63,10 @@ class Mensaje(models.Model):
     destinatario = models.ForeignKey(User, on_delete=models.CASCADE, related_name="mensajes_entrantes")
     fecha = models.DateTimeField(auto_now_add=True)
     asunto = models.CharField(max_length=30)
-    contenido = models.TextField(max_length=255) 
+    contenido = RichTextField(blank=True, null=True) 
     no_leido = models.BooleanField(default=True)
     
 
-    
 
 
     

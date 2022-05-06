@@ -1,9 +1,10 @@
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.core.mail import send_mail
 from .models import*
 from .forms import*
 
@@ -50,13 +51,21 @@ def eliminarReserva(request, id):
 
 def contacto(request):
     if request.method == 'POST':
+       
         miFormulario = ContactoFormulario(request.POST)
-        print(miFormulario)
-        if miFormulario.is_valid:
+        if miFormulario.is_valid():
             informacion = miFormulario.cleaned_data    
             contacto = Contacto(motivo=informacion['motivo'], nombre_completo=informacion['nombre_completo'], telefono=informacion['telefono'], email=informacion['email'], mensaje=informacion['mensaje'], local=informacion['local'])
             contacto.save()
-            return render(request, "inicio.html")
+            miFormulario = ContactoFormulario()
+
+            motivo = request.POST['motivo']
+            mensaje = request.POST['mensaje'] + " " + request.POST['email']
+            remitente = settings.EMAIL_HOST_USER
+            destinatario = ["vanessaveizaga@gmail.com"]
+            send_mail(motivo, mensaje, remitente, destinatario)
+            message = "¡Tu mensaje ha sido enviado exitosamente!"
+            return render(request, "contacto.html", {"miFormulario": miFormulario, "mensaje": message})
     else:
         miFormulario = ContactoFormulario()
     return render(request, "contacto.html", {"miFormulario": miFormulario})
@@ -71,6 +80,7 @@ def local(request):
     provincias = sorted(list(provincias))
     return render(request, "local.html", {"locales": locales, "provincias": provincias})  
 
+@login_required
 def agregarLocal(request):
     if request.method == 'POST':
         miFormulario = LocalFormulario(request.POST, request.FILES)
@@ -86,10 +96,7 @@ def agregarLocal(request):
         miFormulario = LocalFormulario()        
     return render(request, "agregarLocal.html", {"miFormulario": miFormulario})
 
-def actualizarLocal(request):
-    locales = Local.objects.order_by('provincia').all()
-    return render(request, "actualizarLocal.html", {"locales": locales})    
-
+@login_required
 def eliminarLocal(request, id):
     local = Local.objects.get(id = id)
     local.delete()
@@ -100,6 +107,7 @@ def eliminarLocal(request, id):
     provincias = sorted(list(provincias))
     return render(request, "local.html", {"locales": locales, "provincias": provincias})
 
+@login_required
 def editarLocal(request, id):
     local = Local.objects.get(id = id)
     if request.method == 'POST':
@@ -130,6 +138,7 @@ def menu(request):
     tipos = sorted(list(tipos))
     return render(request, "menu.html", {"menus": menus, "tipos": tipos})    
 
+@login_required
 def agregarMenu(request):
     if request.method == 'POST':
         miFormulario = MenuFormulario(request.POST, request.FILES)
@@ -143,11 +152,8 @@ def agregarMenu(request):
     else:
         miFormulario = MenuFormulario()        
     return render(request, "agregarMenu.html", {"miFormulario": miFormulario})
-               
-def actualizarMenu(request):
-    menus = Menu.objects.order_by('tipo').all()
-    return render(request, "actualizarMenu.html", {"menus": menus})    
 
+@login_required               
 def eliminarMenu(request, id):
     menu = Menu.objects.get(id = id)
     menu.delete()
@@ -158,6 +164,7 @@ def eliminarMenu(request, id):
     tipos = sorted(list(tipos))
     return render(request, "menu.html", {"menus": menus, "tipos": tipos})
 
+@login_required
 def editarMenu(request, id):
     menu = Menu.objects.get(id = id)
     if request.method == 'POST':
@@ -187,11 +194,11 @@ def login_request(request):
             user = authenticate(username = username, password = password)
             if user is not None:
                 login(request, user)
-                return render(request, "inicio.html", {"mensaje": f"Bienvenido {username}"})
+                return render(request, "inicio.html", {"mensaje": f"¡Bienvenido/a {username}!"})
             else:
-                return render(request, "login.html", {"mensaje": "Error, datos incorrectos."})   
+                return render(request, "login.html", {"mensaje": "Error, datos incorrectos.", "form": form})   
         else:
-            return render(request, "login.html", {"mensaje": "Error, formulario erróneo"})   
+            return render(request, "login.html", {"mensaje": "Error, formulario erróneo", "form": form})   
     form = AuthenticationForm()
     return render(request, "login.html", {"form": form})              
 
@@ -201,7 +208,7 @@ def register(request):
         if miFormulario.is_valid():
             username = miFormulario.cleaned_data['username']
             miFormulario.save()
-            return render(request, "inicio.html", {"miFormulario": miFormulario, "mensaje": "Usuario creado."})
+            return render(request, "inicio.html", {"miFormulario": miFormulario, "mensaje": "¡Te has registrado con éxito!"})
     else:
         miFormulario = UserRegisterForm()
     return render(request, "registro.html", {"miFormulario": miFormulario})    
@@ -220,7 +227,10 @@ def editarPerfil(request):
             usuario.email = informacion['email']
             usuario.password1 = informacion['password1']
             usuario.password2 = informacion['password2']
-            usuario.imagen = informacion['imagen']
+            if informacion['imagen'] == False:
+                usuario.imagen = 'avatar/perfil.png'
+            else:    
+                usuario.imagen = informacion['imagen']
             usuario.save()
             miFormulario = UserEditForm()
             return render(request, "editarPerfil.html", {"miFormulario": miFormulario, "mensaje": "Se guardaron los cambios correctamente."})
@@ -228,15 +238,14 @@ def editarPerfil(request):
         miFormulario = UserEditForm(initial={"first_name": usuario.first_name, "last_name": usuario.last_name, "email": usuario.email, "imagen": usuario.imagen})
     return render(request, "editarPerfil.html", {"miFormulario": miFormulario})    
 
+@login_required
 def miCuenta(request):
     perfil = User.objects.get(username = request.user)
     mensajes = len(Mensaje.objects.filter(destinatario = request.user).filter(no_leido = True))
-
     return render(request, "miCuenta.html", {"perfil": perfil, "mensajes": mensajes})    
 
 #---------------------COMUNIDAD-----------------------------------------------------
 
-@login_required
 def comunidad(request):
     posts = Post.objects.order_by('-fecha').all()
     if request.method == 'POST':
@@ -262,16 +271,18 @@ def comentario(request, id_post):
             comentario = Comentario(user = user, post = post, contenido = miFormulario.cleaned_data['contenido'])
             comentario.save()
             mensaje = "¡Tu comentario ha sido agregado con éxito!"
-            return render(request, "comentario.html", {"miFormulario": miFormulario, "comentario":comentario} )
+            return render(request, "comentario.html", {"miFormulario": miFormulario, "comentario":comentario, "mensaje": mensaje} )
     else:
         miFormulario = ComentarioFormulario()
     return render(request, "comentario.html", {"miFormulario": miFormulario})    
 
+@login_required
 def eliminarComentario(request, id):
     comentario = Comentario.objects.get(id = id)
     comentario.delete()
     return redirect('Comunidad')
 
+@login_required
 def editarComentario(request, id):
     comentario = Comentario.objects.get(id = id)
     if request.method == 'POST':
@@ -287,11 +298,13 @@ def editarComentario(request, id):
          miFormulario = ComentarioFormulario(initial={"contenido": comentario.contenido})
     return render(request, "editarComentario.html", {"miFormulario": miFormulario})  
 
+@login_required
 def eliminarPost(request, id):
     post = Post.objects.get(id = id)
     post.delete()
     return redirect('Comunidad')
 
+@login_required
 def editarPost(request, id):
     post = Post.objects.get(id = id)
     if request.method == 'POST':
@@ -299,14 +312,19 @@ def editarPost(request, id):
         if miFormulario.is_valid():
             informacion = miFormulario.cleaned_data    
             post.contenido = informacion["contenido"]
-            post.imagen = informacion['imagen']
+            if informacion['imagen'] == False:
+                print("Hola")
+                post.imagen = None     
+                print(post.imagen)
+            else:
+                post.imagen = informacion['imagen'] 
             post.save()
             miFormulario = PostFormulario()
             mensaje = "¡Tu post fue modificado correctamente!."
             return render(request, "editarPost.html", {"miFormulario": miFormulario, "mensaje": mensaje})
     else:
          miFormulario = PostFormulario(initial={"contenido": post.contenido, "imagen": post.imagen})
-    return render(request, "editarPost.html", {"miFormulario": miFormulario})      
+    return render(request, "editarPost.html", {"miFormulario": miFormulario})     
 
 def detallePost(request, id):
     post = Post.objects.get(id = id)
@@ -322,8 +340,9 @@ def mensaje(request, id_destinatario):
             destinatario = User.objects.get(id = id_destinatario)
             mensaje = Mensaje(user = user, destinatario = destinatario, asunto = miFormulario.cleaned_data['asunto'], contenido = miFormulario.cleaned_data['contenido'])
             mensaje.save()
-            messages.success(request, "¡Tu mensaje se ha enviado exitosamente!")
-            return render(request, "mensaje.html") 
+            miFormulario = MensajeFormulario(request.POST)
+            mensaje = "¡Tu mensaje se ha enviado exitosamente!"
+            return render(request, "mensaje.html", {"destinatario": destinatario, "miFormulario": miFormulario, "mensaje": mensaje}) 
     else:
         miFormulario = MensajeFormulario()
         destinatario = User.objects.get(id = id_destinatario)
@@ -340,8 +359,15 @@ def buzon(request, id_user):
     enviados = Mensaje.objects.order_by('-fecha').filter(user = id_user)
     return render(request, "buzon.html", {"recibidos": recibidos, "enviados": enviados})  
 
+@login_required
 def leerMensaje(request, id):
     mensaje = Mensaje.objects.get(id = id)
     mensaje.no_leido = False
     mensaje.save()
     return render(request, "leerMensaje.html", {"mensaje": mensaje})  
+
+def about_us(request):
+    ramiro = '/media/about_us/Ramiro.jpg'
+    vane = '/media/about_us/Vane.jpg'
+    print(vane)
+    return render(request, "about_us.html", {"ramiro": ramiro, "vane": vane})      

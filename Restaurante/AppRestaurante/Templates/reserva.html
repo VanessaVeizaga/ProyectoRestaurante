@@ -7,13 +7,13 @@
 {% block header %}<h2>Reservas</h2>{% endblock header %}
     
 {% block contenidoQueCambia %}
+
 {% if miFormulario.errors %}
     <p style="color: red;">Están mal los datos, revisar</p>    
 {% endif %}
+<p style="text-align:center">{{mensaje}} </p>
 <section style="margin-bottom: 30px;" class="contenido">
-    <p>{{mensaje}} </p>
-    <br>
-    <h4>Hacé tu reserva:</h4>   
+    <h4>Hacé tu reserva:</h4><br>   
     <form  style="width: 550px;" class="formulario" action="" method="POST">{% csrf_token %}
         <table>
             {{miFormulario.as_table}}
@@ -21,5 +21,6 @@
         <input type="submit" value="Enviar">
     </form>
 </section>    
+
 {% endblock contenidoQueCambia %}
 

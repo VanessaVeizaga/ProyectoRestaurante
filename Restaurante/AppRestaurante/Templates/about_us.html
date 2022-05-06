@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre nosotros</title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+</head>
+<section style="width: 850px;" class="contenido">
+    <br>
+    <h2>Sobre nosotros:</h2><br>
+    <div style="vertical-align: top;">
+        <div class="about" style="background-image: url('{{ramiro}}');"></div>
+        <strong>    
+            <br>
+            Soy Ramiro Montserrat, profesional gastronómico y amante de la cocina desde siempre. 
+            Gracias a esta pasión surgió la idea, en conjunto, de desarrollar una app de reservas 
+            para un restaurante. <br>
+            La idea es poder customizarlo, y así poder venderlo a distintos restaurantes.       
+        </strong> 
+    </div>     
+<br><br>
+    <div>
+        <div class="about" style="background-image: url('{{vane}}');"></div>
+        <strong>    
+            Soy Vanessa Veizaga. Actualmente trabajo en un call center, y estoy incursionando en 
+            el mundo de la programación. <br>
+            Durante varios años estuve buscando estudiar algo que realmente me gustara, y no tuve suerte.
+            Nada me interesaba demasiado como para sacrificar mi tiempo, mis ganas, entre otras cosas. 
+            Hasta que conocí la programación, y por fin siento que encontré algo que me apasiona bastante.
+            Así que espero seguir capacitándome para poder dedicarme a esto.
+        </strong> 
+    </div>     
+    <br>   
+
+    <a class="link" href="{% url 'Inicio' %}">Volver a Inicio</a> <br>
+</section>
+</html>

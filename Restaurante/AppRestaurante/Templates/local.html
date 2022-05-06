@@ -9,6 +9,10 @@
     
 {% block contenidoQueCambia %}
 
+{% if request.user.is_superuser %}
+<a style="float:left;" class="link"; href="{% url 'AgregarLocal' %}">Agregar local</a></p> 
+{% endif %} 
+
 <section style="margin-bottom: 30px;" class="contenido">
     <h4>Nuestros locales están abiertos todos los días de 8:00 am a 1:00 am, ¡Te esperamos!</h4>
     <br>
@@ -17,19 +21,20 @@
     {% endfor %} 
     <br><br>
     {% for provincia in provincias %}
-        <h5 id="{{provincia}}">{{provincia}}</h5>             
+        <h4 id="{{provincia}}">{{provincia}}</h4> <br>           
         {% for local in locales %}      
             {% if local.provincia == provincia %} 
                 <p style="margin-left: 5px;"><b>{{local.localidad}}</b> - <b>Dirección:</b> {{local.direccion}} - <b>Teléfono:</b>  {{local.telefono}}</p>
                 <img src="{{local.imagen.url}}", width="550px">   
-                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarLocal' local.id %}">Eliminar</a>
-                <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarLocal' local.id %}">Editar</a>        
+                {% if request.user.is_superuser %}
+                    <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarLocal' local.id %}">Eliminar</a>
+                    <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarLocal' local.id %}">Editar</a>        
+                {% endif %} 
+                <a style="color: darkblue; font-size: small; margin-left: 5px; float: right; margin-right: 5px;" href="#">Ir al comienzo</a>
             {% endif %} 
         {% endfor %}
         <br><br>
     {% endfor %}
-<br><br>
-    <a class="link"; href="{% url 'AgregarLocal' %}">Agregar local</a></p> 
-
-</section>    
+</section>   
+ 
 {% endblock contenidoQueCambia %}

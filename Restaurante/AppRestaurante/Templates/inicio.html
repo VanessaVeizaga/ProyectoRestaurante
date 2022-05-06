@@ -28,7 +28,7 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                         <li class="nav-item"><a class="nav-link" href="{% url 'Inicio' %}">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'Menu' %}">Menú</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'Menu' %}">Carta</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'Local' %}">Locales</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'Reserva' %}">Reservas</a><li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'Contacto' %}">Contacto</a></li>
@@ -51,6 +51,7 @@
         
         <header class="masthead">
             <div class="container">
+                <p style="color: greenyellow; font-size: 20px;">{{mensaje}}</p>
                 <div class="masthead-subheading">Lo importante es compartir...</div>
                 <div class="masthead-heading text-uppercase">Dominicci Restaurante</div>
             </div>
@@ -61,7 +62,10 @@
         <footer class="footer py-4">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2022</div>
+                    <div class="col-lg-4 text-lg-start">
+                        <a class="link-dark text-decoration-none me-3" href="{% url 'About_us' %}">Sobre nosotros</a>
+                        <a class="link-dark text-decoration-none" href="#!">Copyright &copy; Your Website 2022</a>
+                    </div>   
                     <div class="col-lg-4 my-3 my-lg-0">
                         <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                         <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>

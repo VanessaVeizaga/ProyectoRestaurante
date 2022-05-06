@@ -4,6 +4,8 @@
 
 {% block title %}Mi Post{% endblock title %}
 
+{% block header %}<h2>Post</h2>{% endblock header %}
+
 {% block contenidoQueCambia %}
 
 <section class="contenido">
@@ -11,7 +13,7 @@
     <p style="margin-left: 5px;">{{post.contenido}}</p>
         
         {% if post.imagen %}
-            <img src="{{post.imagen.url}}", width="500px"> 
+            <img src="{{post.imagen.url}}", width="550px"> 
         {% endif %}
         <br>
         <p class="fecha">{{post.fecha}}</p> 
@@ -31,7 +33,7 @@
                 </strong>
                 <br>
                 <p style="font-size: 15px; margin-bottom: 5px;">{{comentario.contenido}}</p>
-                {% if request.user == comentario.user %}
+                {% if request.user == comentario.user or request.user.is_superuser %}
                     <a style="color: darkblue; font-size: small;" href="{% url 'EliminarComentario' comentario.id %}">Eliminar</a>
                     <a style="color: darkblue; font-size: small;" href="{% url 'EditarComentario' comentario.id %}">Editar</a>
                 {% endif %}

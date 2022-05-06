@@ -14,24 +14,23 @@
             {{destinatario.username}} 
         </strong>
     </h5><br>
-    {% for msg in messages  %}
-       {{msg}}
-    {% endfor %}
+
     {% if miFormulario.errors %}
         <p style="color: red;">Están mal los datos, revisar</p>            
     {% endif %}
-            
-    <form class="form" action="" method="POST">{% csrf_token %}
-            
+    <p style="text-align:center">{{mensaje}} </p>        
+    <form class="form" action="" method="POST">{% csrf_token %} 
         <div class="mb-3">
-            <label for="{{miFormulario.asunto.id_for_label}}" class="form-label">{{miFormulario.asunto.label_tag|capfirst}}</label>
+            <label for="{{miFormulario.asunto.id_for_label}}" class="form-label"><b>{{miFormulario.asunto.label_tag|capfirst}}</b></label>
             <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="{{miFormulario.asunto.html_name}}">   
         </div>
         <div class="mb-3">
-            <label style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: bold;" class="form-label" for="{{miFormulario.contenido.id_for_label}}"> {{miFormulario.contenido.label_tag|capfirst}} </label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" type="text" name="{{miFormulario.contenido.html_name}}"></textarea>
+            <label  class="form-label" for="{{miFormulario.contenido.id_for_label}}"> <b>{{miFormulario.contenido.label_tag|capfirst}}</b></label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" type="text" name="{{miFormulario.contenido.html_name}}"> </textarea>
         </div>                 
         <input style="margin: 0 auto;" type="submit" value="Enviar">
     </form>
+    <br>
+    <a class="link" href="{% url 'Buzon' user.id %}">Ir al Buzón</a>  
 </section>  
 {% endblock contenidoQueCambia %}

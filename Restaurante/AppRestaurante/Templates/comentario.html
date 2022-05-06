@@ -10,14 +10,11 @@
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
 </head>
 <section class="formulario">
-    <h4>Agrega un comentario:</h4>
-    <br>
     <p>{{mensaje}}</p>
-    <br>
+    <h4>Agrega un comentario:</h4>
+ 
     {% if miFormulario.errors %}
-        
         <p style="color: red;">Están mal los datos, revisar</p>
-            
     {% endif %}
          
     <form class="formulario" action="" method="POST">{% csrf_token %}

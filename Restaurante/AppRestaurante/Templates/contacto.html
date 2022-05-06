@@ -12,11 +12,13 @@
 {% if miFormulario.errors %}
     <p style="color: red;">Están mal los datos, revisar</p>    
 {% endif %}
+<p style="text-align:center">{{mensaje}} </p>
 <section style="margin-bottom: 30px;" class="contenido">
-    <h4>Contáctanos:</h4>   
-    <form  class="formulario" action="" method="POST">{% csrf_token %}
+    <h4>Ante cualquier consulta, sugerencia o reclamo; contáctanos aquí:</h4><br> 
+    <form class="formulario" action="" method="POST">{% csrf_token %}
         <table>
             {{miFormulario.as_table}}
+            {{miFormulario.media}}  
         </table><br>
         <input type="submit" value="Enviar">
     </form>

@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
 </head>
-<body>
+<body style="background-color: khaki;">
     <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
         <table style="text-align: left;">
             {{miFormulario.as_table}}
         </table>
         <input style="margin: 10px 110px 0px;" type="submit" value="Enviar">
     </form>
+    <a href="{% url 'Inicio' %}">Ir a Inicio</a>
 </body>
 </html>

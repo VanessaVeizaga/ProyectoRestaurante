@@ -8,11 +8,9 @@ urlpatterns = [
     path('local/', views.local, name="Local"),
     path('reserva/', views.reserva, name="Reserva"),
     path('contacto/', views.contacto, name="Contacto"),
-    path('actualizarLocal/', views.actualizarLocal, name="ActualizarLocal"),
     path('agregarLocal/', views.agregarLocal, name="AgregarLocal"),
     path('eliminarLocal/<id>', views.eliminarLocal, name="EliminarLocal"),
     path('editarLocal/<id>', views.editarLocal, name="EditarLocal"),
-    path('actualizarMenu', views.actualizarMenu, name="ActualizarMenu"),
     path('agregarMenu/', views.agregarMenu, name="AgregarMenu"),
     path('eliminarMenu/<id>', views.eliminarMenu, name="EliminarMenu"),
     path('editarMenu/<id>', views.editarMenu, name="EditarMenu"),
@@ -33,6 +31,7 @@ urlpatterns = [
     path('mensaje/<id_destinatario>', views.mensaje, name="Mensaje"),
     path('buzon/<id_user>', views.buzon, name="Buzon"),
     path('leerMensaje/<id>', views.leerMensaje, name="LeerMensaje"),
+    path('about_us', views.about_us, name="About_us"),
 
 
 ]

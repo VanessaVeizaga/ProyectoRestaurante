@@ -11,11 +11,7 @@
 <section class="contenido">
 
     <h4>Compartí tu experiencia en nuestros locales:</h4>
-
-    {% for msg in messages  %}
-      {{msg}}
-    {% endfor %}
-    
+    <br>
     {% if miFormulario.errors %}
         
         <p style="color: red;">Están mal los datos, revisar</p>
@@ -38,7 +34,7 @@
     <h5>Los que nos visitaron...</h5>
     {% for post in posts  %}
         <br>
-        --------------------------------------------------------------------------------
+        -----------------------------------------------------------------------------------
         <br>
         <a style="color: black;"href="{% url 'Perfil' post.user.id %}">
             <div class="avatar" style="background-image: url('{{post.user.imagen.url}}');"></div>
@@ -52,32 +48,33 @@
         {% if post.imagen %}
             <img src="{{post.imagen.url}}", width="550px"> 
         {% endif %}
-        <p class="fecha">{{post.fecha}}</p>   
-        {% if request.user == post.user %}
+       
+        {% if request.user == post.user or request.user.is_superuser %}
             <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarPost' post.id %}">Eliminar</a>
             <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarPost' post.id %}">Editar</a>
          {% endif %}
-        <br>
+        <br><br>
         <h6>Comentarios...</h6>
         {% if not post.comentarios.all %}
             <p>Todavía no hay comentarios...<a class="link"; href="{% url 'Comentario' post.id %}">Agrega uno</a></p> 
         {% else %}   
         <a class="link" href="{% url 'Comentario' post.id %}">Agrega un comentario..</a> 
-        <br><br>
+        <br>
             {% for comentario in post.comentarios.all %}
-                <a style="color: black;"href="{% url 'Perfil' post.user.id %}">
+                 <br>
+                <a style="color: black; display: block;"href="{% url 'Perfil' comentario.user.id %}">
                     <div class="avatar" style="background-image: url('{{comentario.user.imagen.url}}');"></div>
-                 <strong style="font-size: 14px;">    
-                     {{comentario.user}} - 
-                     {{comentario.fecha}}
-                 </strong>
+                    <strong style="font-size: 14px;">    
+                        {{comentario.user}} - 
+                        {{comentario.fecha}}
+                    </strong>
                  </a>    
-                <br>
-                <p style="font-size: 15px; margin-bottom: 5px;">{{comentario.contenido}}</p>
-                {% if request.user == comentario.user %}
+                <p style="font-size: 15px; margin-bottom: 0px;">{{comentario.contenido}}</p>
+                {% if request.user == comentario.user or request.user.is_superuser %}
                     <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EliminarComentario' comentario.id %}">Eliminar</a>
                     <a style="color: darkblue; font-size: small; margin-left: 5px;" href="{% url 'EditarComentario' comentario.id %}">Editar</a>
                 {% endif %}
+                
             {% endfor %}     
         {% endif %}
     {% endfor %}
