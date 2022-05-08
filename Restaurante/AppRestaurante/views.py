@@ -42,7 +42,7 @@ def reserva(request):
     return render(request, "reserva.html", {"miFormulario": miFormulario})
 
 @login_required
-def eliminarReserva(request, id):
+def eliminarReserva(request, id):  
     reserva = Reserva.objects.get(id = id)
     reserva.delete()
     return render(request, "miCuenta.html")
@@ -50,8 +50,7 @@ def eliminarReserva(request, id):
 #--------------------CONTACTO----------------------------------------------------------------------------------
 
 def contacto(request):
-    if request.method == 'POST':
-       
+    if request.method == 'POST':       
         miFormulario = ContactoFormulario(request.POST)
         if miFormulario.is_valid():
             informacion = miFormulario.cleaned_data    
@@ -82,19 +81,21 @@ def local(request):
 
 @login_required
 def agregarLocal(request):
-    if request.method == 'POST':
-        miFormulario = LocalFormulario(request.POST, request.FILES)
-        print(miFormulario)
-        if miFormulario.is_valid:
-            informacion = miFormulario.cleaned_data    
-            local = Local(provincia=informacion['provincia'], localidad=informacion['localidad'], direccion=informacion['direccion'], telefono=informacion['telefono'], capacidad=informacion['capacidad'], imagen=informacion['imagen'])
-            local.save()
-            miFormulario = LocalFormulario()
-            mensaje = "Se agregó con éxito el local ubicado en: "
-            return render(request, "agregarLocal.html", {"miFormulario": miFormulario, "local": local, "mensaje": mensaje })
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            miFormulario = LocalFormulario(request.POST, request.FILES)
+            if miFormulario.is_valid():
+                informacion = miFormulario.cleaned_data    
+                local = Local(provincia=informacion['provincia'], localidad=informacion['localidad'], direccion=informacion['direccion'], telefono=informacion['telefono'], capacidad=informacion['capacidad'], imagen=informacion['imagen'])
+                local.save()
+                miFormulario = LocalFormulario()
+                mensaje = "Se agregó con éxito el local ubicado en: "
+                return render(request, "agregarLocal.html", {"miFormulario": miFormulario, "local": local, "mensaje": mensaje })
+        else:
+            miFormulario = LocalFormulario()        
+        return render(request, "agregarLocal.html", {"miFormulario": miFormulario})
     else:
-        miFormulario = LocalFormulario()        
-    return render(request, "agregarLocal.html", {"miFormulario": miFormulario})
+         return render(request, "sin_acceso.html", {"mensaje": "No tiene permiso de acceso a este sitio."})
 
 @login_required
 def eliminarLocal(request, id):
@@ -109,24 +110,27 @@ def eliminarLocal(request, id):
 
 @login_required
 def editarLocal(request, id):
-    local = Local.objects.get(id = id)
-    if request.method == 'POST':
-        miFormulario = LocalFormulario(request.POST, request.FILES)
-        if miFormulario.is_valid():
-            informacion = miFormulario.cleaned_data    
-            local.provincia = informacion["provincia"]
-            local.localidad = informacion["localidad"]
-            local.direccion = informacion["direccion"]
-            local.telefono = informacion["telefono"]
-            local.capacidad = informacion["capacidad"]
-            local.imagen = informacion["imagen"]
-            local.save()
-            miFormulario = LocalFormulario()
-            mensaje = "Se guardaron correctamente los cambios."
-            return render(request, "editarLocal.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    if request.user.is_superuser:
+        local = Local.objects.get(id = id)
+        if request.method == 'POST':
+            miFormulario = LocalFormulario(request.POST, request.FILES)
+            if miFormulario.is_valid():
+                informacion = miFormulario.cleaned_data    
+                local.provincia = informacion["provincia"]
+                local.localidad = informacion["localidad"]
+                local.direccion = informacion["direccion"]
+                local.telefono = informacion["telefono"]
+                local.capacidad = informacion["capacidad"]
+                local.imagen = informacion["imagen"]
+                local.save()
+                miFormulario = LocalFormulario()
+                mensaje = "Se guardaron correctamente los cambios."
+                return render(request, "editarLocal.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+        else:
+            miFormulario = LocalFormulario(initial={"provincia": local.provincia, "localidad": local.localidad, "direccion": local.direccion, "telefono": local.telefono, "capacidad": local.capacidad, "imagen": local.imagen})
+        return render(request, "editarLocal.html", {"miFormulario": miFormulario, "id": id})
     else:
-         miFormulario = LocalFormulario(initial={"provincia": local.provincia, "localidad": local.localidad, "direccion": local.direccion, "telefono": local.telefono, "capacidad": local.capacidad, "imagen": local.imagen})
-    return render(request, "editarLocal.html", {"miFormulario": miFormulario, "id": id})
+        return render(request, "sin_acceso.html", {"mensaje": "No tiene permiso de acceso a este sitio."})
 
 #-------------------------MENÚ-----------------------------------------------------------------------------------
 
@@ -140,18 +144,21 @@ def menu(request):
 
 @login_required
 def agregarMenu(request):
-    if request.method == 'POST':
-        miFormulario = MenuFormulario(request.POST, request.FILES)
-        if miFormulario.is_valid():
-            informacion = miFormulario.cleaned_data    
-            menu = Menu(tipo=informacion['tipo'], nombre=informacion['nombre'], descripcion=informacion['descripcion'], imagen=informacion['imagen'])
-            menu.save()
-            miFormulario = MenuFormulario()
-            mensaje = "Se agregó con éxito el siguiente menú: "
-            return render(request, "agregarMenu.html", {"miFormulario": miFormulario, "menu": menu, "mensaje": mensaje })
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            miFormulario = MenuFormulario(request.POST, request.FILES)
+            if miFormulario.is_valid():
+                informacion = miFormulario.cleaned_data    
+                menu = Menu(tipo=informacion['tipo'], nombre=informacion['nombre'], descripcion=informacion['descripcion'], imagen=informacion['imagen'])
+                menu.save()
+                miFormulario = MenuFormulario()
+                mensaje = "Se agregó con éxito el siguiente menú: "
+                return render(request, "agregarMenu.html", {"miFormulario": miFormulario, "menu": menu, "mensaje": mensaje })
+        else:
+            miFormulario = MenuFormulario()        
+        return render(request, "agregarMenu.html", {"miFormulario": miFormulario})
     else:
-        miFormulario = MenuFormulario()        
-    return render(request, "agregarMenu.html", {"miFormulario": miFormulario})
+        return render(request, "sin_acceso.html", {"mensaje": "No tiene permiso de acceso a este sitio."})
 
 @login_required               
 def eliminarMenu(request, id):
@@ -166,23 +173,25 @@ def eliminarMenu(request, id):
 
 @login_required
 def editarMenu(request, id):
-    menu = Menu.objects.get(id = id)
-    if request.method == 'POST':
-        miFormulario = MenuFormulario(request.POST, request.FILES)
-        if miFormulario.is_valid():
-            informacion = miFormulario.cleaned_data    
-            menu.tipo = informacion["tipo"]
-            menu.nombre = informacion["nombre"]
-            menu.descripcion = informacion["descripcion"]
-            menu.imagen = informacion["imagen"]
-            menu.save()
-            miFormulario = MenuFormulario()
-            mensaje = "Se guardaron correctamente los cambios."
-            return render(request, "editarMenu.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    if request.user.is_superuser:
+        menu = Menu.objects.get(id = id)
+        if request.method == 'POST':
+            miFormulario = MenuFormulario(request.POST, request.FILES)
+            if miFormulario.is_valid():
+                informacion = miFormulario.cleaned_data    
+                menu.tipo = informacion["tipo"]
+                menu.nombre = informacion["nombre"]
+                menu.descripcion = informacion["descripcion"]
+                menu.imagen = informacion["imagen"]
+                menu.save()
+                miFormulario = MenuFormulario()
+                mensaje = "Se guardaron correctamente los cambios."
+                return render(request, "editarMenu.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+        else:
+             miFormulario = MenuFormulario(initial={"tipo": menu.tipo, "nombre": menu.nombre, "descripcion": menu.descripcion, "imagen": menu.imagen})
+        return render(request, "editarMenu.html", {"miFormulario": miFormulario, "id": id})
     else:
-         miFormulario = MenuFormulario(initial={"tipo": menu.tipo, "nombre": menu.nombre, "descripcion": menu.descripcion, "imagen": menu.imagen})
-    return render(request, "editarMenu.html", {"miFormulario": miFormulario, "id": id})
-
+        return render(request, "sin_acceso.html", {"mensaje": "No tiene permiso de acceso a este sitio."})
   #--------------------LOGIN------------------------------------------------------------------------
 
 def login_request(request):
@@ -285,18 +294,21 @@ def eliminarComentario(request, id):
 @login_required
 def editarComentario(request, id):
     comentario = Comentario.objects.get(id = id)
-    if request.method == 'POST':
-        miFormulario = ComentarioFormulario(request.POST)
-        if miFormulario.is_valid():
-            informacion = miFormulario.cleaned_data    
-            comentario.contenido = informacion["contenido"]
-            comentario.save()
-            miFormulario = ComentarioFormulario()
-            mensaje = "¡Tu comentario fue modificado correctamente!."
-            return render(request, "editarComentario.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    if request.user == comentario.user or request.user.is_superuser:
+        if request.method == 'POST':
+            miFormulario = ComentarioFormulario(request.POST)
+            if miFormulario.is_valid():
+                informacion = miFormulario.cleaned_data    
+                comentario.contenido = informacion["contenido"]
+                comentario.save()
+                miFormulario = ComentarioFormulario()
+                mensaje = "¡Tu comentario fue modificado correctamente!."
+                return render(request, "editarComentario.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+        else:
+            miFormulario = ComentarioFormulario(initial={"contenido": comentario.contenido})
+        return render(request, "editarComentario.html", {"miFormulario": miFormulario}) 
     else:
-         miFormulario = ComentarioFormulario(initial={"contenido": comentario.contenido})
-    return render(request, "editarComentario.html", {"miFormulario": miFormulario})  
+        return render(request, "sin_acceso.html", {"mensaje": "No tiene permiso de acceso a este sitio."})
 
 @login_required
 def eliminarPost(request, id):
@@ -307,24 +319,25 @@ def eliminarPost(request, id):
 @login_required
 def editarPost(request, id):
     post = Post.objects.get(id = id)
-    if request.method == 'POST':
-        miFormulario = PostFormulario(request.POST, request.FILES)
-        if miFormulario.is_valid():
-            informacion = miFormulario.cleaned_data    
-            post.contenido = informacion["contenido"]
-            if informacion['imagen'] == False:
-                print("Hola")
-                post.imagen = None     
-                print(post.imagen)
-            else:
-                post.imagen = informacion['imagen'] 
-            post.save()
-            miFormulario = PostFormulario()
-            mensaje = "¡Tu post fue modificado correctamente!."
-            return render(request, "editarPost.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+    if request.user == post.user or request.user.is_superuser:
+        if request.method == 'POST':
+            miFormulario = PostFormulario(request.POST, request.FILES)
+            if miFormulario.is_valid():
+                informacion = miFormulario.cleaned_data    
+                post.contenido = informacion["contenido"]
+                if informacion['imagen'] == False:
+                    post.imagen = None     
+                else:
+                    post.imagen = informacion['imagen'] 
+                post.save()
+                miFormulario = PostFormulario()
+                mensaje = "¡Tu post fue modificado correctamente!."
+                return render(request, "editarPost.html", {"miFormulario": miFormulario, "mensaje": mensaje})
+        else:
+            miFormulario = PostFormulario(initial={"contenido": post.contenido, "imagen": post.imagen})
+        return render(request, "editarPost.html", {"miFormulario": miFormulario})   
     else:
-         miFormulario = PostFormulario(initial={"contenido": post.contenido, "imagen": post.imagen})
-    return render(request, "editarPost.html", {"miFormulario": miFormulario})     
+        return render(request, "sin_acceso.html", {"mensaje": "No tiene permiso de acceso a este sitio."})
 
 def detallePost(request, id):
     post = Post.objects.get(id = id)

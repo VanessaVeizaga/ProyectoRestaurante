@@ -33,5 +33,4 @@ urlpatterns = [
     path('leerMensaje/<id>', views.leerMensaje, name="LeerMensaje"),
     path('about_us', views.about_us, name="About_us"),
 
-
 ]
