@@ -1,3 +1,4 @@
+import re
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -192,6 +193,7 @@ def editarMenu(request, id):
         return render(request, "editarMenu.html", {"miFormulario": miFormulario, "id": id})
     else:
         return render(request, "sin_acceso.html", {"mensaje": "No tiene permiso de acceso a este sitio."})
+        
   #--------------------LOGIN------------------------------------------------------------------------
 
 def login_request(request):
@@ -257,19 +259,21 @@ def miCuenta(request):
 
 def comunidad(request):
     posts = Post.objects.order_by('-fecha').all()
-    if request.method == 'POST':
+    if request.method == 'POST':  
         miFormulario = PostFormulario(request.POST, request.FILES)
         if miFormulario.is_valid():
-            user = User.objects.get(username = request.user)
-            informacion = miFormulario.cleaned_data    
-            post = Post(user=user, contenido=informacion['contenido'], imagen=informacion['imagen'])
-            post.save()
-            miFormulario = PostFormulario()
-            return redirect('Comunidad')           
-    else:   
+            if request.user.is_authenticated:
+                user = User.objects.get(username = request.user)
+                informacion = miFormulario.cleaned_data    
+                post = Post(user=user, contenido=informacion['contenido'], imagen=informacion['imagen'])
+                post.save()
+                return redirect('Comunidad')  
+            else:            
+                return redirect('Login')   
+    else:
         miFormulario = PostFormulario()     
-    return render(request, "comunidad.html", {"miFormulario": miFormulario, "posts": posts})         
-
+    return render(request, "comunidad.html", {"miFormulario": miFormulario, "posts": posts})  
+          
 @login_required
 def comentario(request, id_post):
     if request.method == "POST":
@@ -367,9 +371,9 @@ def perfil(request, id_user):
     return render(request, "perfil.html", {"perfil": perfil})  
 
 @login_required
-def buzon(request, id_user):
-    recibidos = Mensaje.objects.order_by('-fecha').filter(destinatario = id_user)
-    enviados = Mensaje.objects.order_by('-fecha').filter(user = id_user)
+def buzon(request):
+    recibidos = Mensaje.objects.order_by('-fecha').filter(destinatario = request.user)
+    enviados = Mensaje.objects.order_by('-fecha').filter(user = request.user)
     return render(request, "buzon.html", {"recibidos": recibidos, "enviados": enviados})  
 
 @login_required

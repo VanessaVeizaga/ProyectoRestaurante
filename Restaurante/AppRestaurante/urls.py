@@ -29,7 +29,7 @@ urlpatterns = [
     path('detallePost/<id>', views.detallePost, name="DetallePost"),
     path('perfil/<id_user>', views.perfil, name="Perfil"),
     path('mensaje/<id_destinatario>', views.mensaje, name="Mensaje"),
-    path('buzon/<id_user>', views.buzon, name="Buzon"),
+    path('buzon', views.buzon, name="Buzon"),
     path('leerMensaje/<id>', views.leerMensaje, name="LeerMensaje"),
     path('about_us', views.about_us, name="About_us"),
 

@@ -21,12 +21,12 @@
     {% if mensajes %}
         <p>
             Tienes <b>{{mensajes}}</b> mensaje/s no leído/s.
-            <a class="link" href="{% url 'Buzon' user.id %}">Ir al Buzón</a>
+            <a class="link" href="{% url 'Buzon' %}">Ir al Buzón</a>
         </p>
     {% else %}
         <p>
             No tienes mensajes nuevos.
-            <a class="link" href="{% url 'Buzon' user.id %}">Ir al Buzón</a>
+            <a class="link" href="{% url 'Buzon' %}">Ir al Buzón</a>
         </p>
       
     {% endif %}

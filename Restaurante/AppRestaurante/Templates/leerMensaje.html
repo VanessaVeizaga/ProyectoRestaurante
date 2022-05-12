@@ -16,7 +16,7 @@
     {% if mensaje.user != request.user %}
         <a class="link" href="{% url 'Mensaje' mensaje.user.id %}">Responder</a> 
     {% endif %}
-    <a class="link" href="{% url 'Buzon' user.id %}">Volver al Buzón</a>   
+    <a class="link" href="{% url 'Buzon' %}">Volver al Buzón</a>   
 </section>    
 
 
